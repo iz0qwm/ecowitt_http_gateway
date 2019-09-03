@@ -8,6 +8,8 @@ other additional sensors, so you need to select the Ecowitt protocol.
 
 Now to permit this script to work, we need a web server to which the GW1000 need to send data.
 
+<b>REQUIREMENTS</B>
+
 The web server must have these possibilities:
 - to create a directory named <b>/data/report</b> (es. /var/www/html/data/report )
 - in this directory will be put the <b>index.php</b> file 
@@ -22,7 +24,7 @@ When the GW1000 will contact the web site, the index.php will do these functions
 2) creates a .CSV file in /var/log/ecowitt ( appended every update, contains all data )<br>
 3) converts in metric all data a resend to a Meteotemplate web site on Internet<br>
 
-SIMPLE INSTALL GUIDE:
+<b>SIMPLE INSTALL GUIDE</b>:
 - Install Apache
 - Install PHP
 - Install jq ( for JSON query )
@@ -36,7 +38,7 @@ Look in /var/log/ecowitt to read fields using 'jq'
 
 jq -r '.tempc' weather_XXXXXXXXXXXXXXXX.json
 
-NEXT STEPS of IMPROVEMENTS:
+<b>NEXT STEPS of IMPROVEMENTS</b>:
 - improve the writing of .CSV file
 - send the .JSON file on an FTP server
 - create a connection to weewx
