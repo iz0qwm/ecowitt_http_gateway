@@ -17,7 +17,7 @@ The web server must have these possibilities:
 So, the web site will look like: http://192.168.1.4/data/report/index.php<br>
 In the GW1000 configuration it will be necessary writing only the IP address, es. 192.168.1.4 and specify the update rate.
 
-I recommend having this web server on a raspberry, in the same network as the GW-1000, so the script can also be used to store data without losing them in case of Internet connection failure<br> 
+I recommend having this web server on a raspberry, in the same network of the GW1000, so the script can also be used to store data without losing them in case of Internet connection failure<br> 
 When the GW1000 will contact the web site, the index.php will do these functions:
 
 1) creates a .JSON file in /var/log/ecowitt ( overwrited every update, contains only last data )<br>
@@ -32,7 +32,7 @@ When the GW1000 will contact the web site, the index.php will do these functions
 - Create /var/log/ecowitt with chmod 777
 - Put file: index.php 
 - Configure index.php
-- Configure GW-1000 to send data to you server
+- Configure GW1000 to send data to you server
 
 Look in /var/log/ecowitt to read fields using 'jq'
 
