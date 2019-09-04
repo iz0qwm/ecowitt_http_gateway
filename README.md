@@ -46,8 +46,8 @@ jq -r '.tempc' weather_XXXXXXXXXXXXXXXX.json
 # ecowitt Meteotemplate plugin
 Simple plugin for [Meteotemplate](http://www.meteotemplate.com/), wonderful template developed by Jachym.
 
-- Download from the repository
-- Install in the plugin directory of your template website, just like another plugin
+- Download it from the repository
+- Install it in the plugin directory of your template website, just like another plugin
 - Go in the Plugin setup page, via Admin Panel of Meteotemplate
 - Configure it
 - Configure the GW1000 with the setup you read in the Plugin page
