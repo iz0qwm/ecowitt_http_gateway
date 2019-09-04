@@ -42,3 +42,13 @@ jq -r '.tempc' weather_XXXXXXXXXXXXXXXX.json
 - improve the writing of .CSV file
 - send the .JSON file on an FTP server
 - create a connection to weewx
+
+# ecowitt Meteotemplate plugin
+Simple plugin for [Meteotemplate](http://www.meteotemplate.com/), wonderful template developed by Jachym.
+
+- Download from the repository
+- Install in the plugin directory of your template website, just like another plugin
+- Go in the Plugin setup page, via Admin Panel of Meteotemplate
+- Configure it
+- Configure the GW1000 with the setup you read in the Plugin page
+
