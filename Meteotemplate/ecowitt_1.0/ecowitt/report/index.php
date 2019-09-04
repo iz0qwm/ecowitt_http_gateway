@@ -12,7 +12,6 @@
 	############################################################################
 	#
 	#	Plugin for updates via Ecowitt HTTP protocol by Raffaello Di Martino 
-	#   http://www.kwos.it
 	#
 	############################################################################
 	#	Version and change log
@@ -58,7 +57,11 @@
 	$device = "auto";  # Use 'auto' for automatic name from PASSKEY else uses the name 
 	$forward_data = 1;
 	$json_data_log = 1;
+	
 	$json_data_logdir = $baseURL . "/plugins/ecowitt/";
+	
+	$txt_data_logdir = $baseURL . "/plugins/ecowitt/";
+	$date_txt = date('Y-m-d');
 	
 	# Convert HTTP POST variables to json
 	$weather_data = $_POST;
@@ -139,6 +142,16 @@
 	{
 		$file = fopen($json_data_logfile, 'w');
 		fwrite($file, $weather_data_json);
+		fclose($file);
+	}
+
+	# Write stream to csvfile
+	$txt_data_logfile = $txt_data_logdir . "/" . $device . "_" . $date_txt . ".csv";
+	if ( $txt_data_log == 1 )
+	{
+		$file = fopen($txt_data_logfile, 'a');
+		#fputcsv($file, array('id','name','description'));
+		fputcsv($file, $weather_data);
 		fclose($file);
 	}
 
