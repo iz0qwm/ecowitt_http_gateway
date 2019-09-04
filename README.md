@@ -1,6 +1,6 @@
 # ecowitt_http_gateway
-<i>Simple HTTP gateway that receives data from <b>GW1000 with Ecowitt protocol</b> and resend data to Meteotemplate or csv, json, ecc.<i>
-<b><i>Install this gateway if you have a web server at home, like a Raspberry or something where you want to store weather data</b></li>
+<i>Simple HTTP gateway that receives data from <b>GW1000 with Ecowitt protocol</b> and resend data to Meteotemplate or csv, json, ecc.</i><br><br>
+<b><i>Install this gateway if you have a web server at home, like a Raspberry or something where you want to store weather data</b></i>
   
 The GW1000 allows sending data both to Ecowitt.net and Wunderground, even to an external site as long as you select one
 of the two previous protocols. <br>
@@ -45,7 +45,7 @@ jq -r '.tempc' weather_XXXXXXXXXXXXXXXX.json
 - create a connection to weewx
 
 # ecowitt Meteotemplate plugin
-<i>Simple plugin for [Meteotemplate](http://www.meteotemplate.com/), wonderful template developed by Jachym.</i>
+<i>Simple plugin for [Meteotemplate](http://www.meteotemplate.com/), wonderful template developed by Jachym.</i><br><br>
 <b><i>Install this Meteotemplate if you don't want to install the previous gateway, or you only need to update your Meteotemplate web site. You will not store any data locally in your network</b></li>
 
 - Download it from the repository
