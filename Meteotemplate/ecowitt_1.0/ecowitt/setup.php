@@ -29,6 +29,15 @@
 	
 ?>
 
+<?php
+   // user has clicked a delete hyperlink
+   if($_GET['action'] && $_GET['action'] == 'delete') {
+       unlink($_GET['filename']);
+       header("Location:setup.php");
+       exit();
+   }
+?>
+
 <!DOCTYPE html>
 <html>
 	<head>
@@ -42,6 +51,11 @@
 			height: 20px;
 		}
 		//-->	
+		.tg  {border-collapse:collapse;border-spacing:0;align:center}
+		.tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}
+		.tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}
+		.tg .tg-0lax{text-align:left;vertical-align:top}
+		.tg .tg-1lax{text-align:center;vertical-align:top}
 		</style>
 	</head>
 	<body>
@@ -74,7 +88,17 @@
 							Record data in CSV format
 						</td>
 						<td style="text-align:left">
-							<input type="checkbox" class="largerCheckbox" name="txt_data_log" class="button2" value="1">
+							<?php
+									if( $txt_data_log == "0" ){ 
+							?>
+										<input type="checkbox" class="largerCheckbox" name="txt_data_log" class="button2" value="1">
+							<?php	}							
+									if( $txt_data_log == "1" ){
+							?>
+										<input type="checkbox" class="largerCheckbox" name="txt_data_log" class="button2" value="0" checked>
+							<?php		}
+							?>							
+
 							<!-- <input name="txt_data_log" class="button2" value="<?php echo $txt_data_log?>"> -->
 						</td>
 					</tr>
@@ -103,6 +127,28 @@
 					<input type="submit" value="Save" class="button2">
 				</div>
 			</form>
+			<br><br>
+			<center>
+			<table class="tg">
+			<tr>
+				<td class='tg-1lax'>Log files (click on to download)</td>
+				<td class='tg-1lax'>Command</td>
+			</tr>	
+			<?php
+				$dir = "./";
+
+				$allFiles = scandir($dir);
+				$files = preg_grep("/^(\.|\.\.|report|(.*)\.php|(.*)\.txt|(.*)\.json)$/",$allFiles, PREG_GREP_INVERT);
+				foreach($files as $file){
+					echo "<tr>";
+					echo "<td class='tg-0lax'><a href='download.php?file=".$file."'>".$file."</a></td>";
+					echo "<td class='tg-0lax'><a href='setup.php?action=delete&filename=".$file."'>delete</a></td>";
+					echo "</tr>";
+				}
+
+			?>
+			</table>
+			</center>
 		</div>
 		<?php include($baseURL."footer.php");?>
 	</body>
