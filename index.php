@@ -85,7 +85,7 @@ $forward_server_password = "******";
 # Convert HTTP POST variables to json
 $weather_data = $_POST;
 $weather_data_forward = $_GET;
-
+$date_txt = date('Y-m-d');
 
 # Conversion factors
 $f_mph_kmh = 1.60934;
@@ -173,7 +173,7 @@ if ( $json_data_log == 1 )
 }
 
 # Write stream to csvfile
-$txt_data_logfile = $txt_data_logdir . "/" . $device . ".csv";
+$txt_data_logfile = $txt_data_logdir . "/" . $device . "_" . $date_txt . ".csv";
 if ( $txt_data_log == 1 )
 {
     $file = fopen($txt_data_logfile, 'a');
