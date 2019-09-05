@@ -18,6 +18,8 @@
 	#
 	# 	v1.0 - Sep 03, 2019
 	# 		- initial release	
+	#	v1.1 - Sep 05, 2019
+	#		- Added support to CSV files
 	#
 	############################################################################
 	
@@ -149,8 +151,17 @@
 	$txt_data_logfile = $txt_data_logdir . "/" . $device . "_" . $date_txt . ".csv";
 	if ( $txt_data_log == 1 )
 	{
+		if (!file_exists($txt_data_logfile)) {
+			$data = json_decode($weather_data_json);
+			foreach($data as $key => $value) {
+				$string .= $key . ',';
+				}
+			$string .= "\n";
+			file_put_contents($txt_data_logfile, $string, FILE_APPEND);
+		}
+		
+
 		$file = fopen($txt_data_logfile, 'a');
-		#fputcsv($file, array('id','name','description'));
 		fputcsv($file, $weather_data);
 		fclose($file);
 	}
