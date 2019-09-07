@@ -40,7 +40,6 @@ Look in /var/log/ecowitt to read fields using 'jq'
 jq -r '.tempc' weather_XXXXXXXXXXXXXXXX.json
 
 <b>NEXT STEPS of IMPROVEMENTS</b>:
-- improve the writing of .CSV file
 - send the .JSON file on an FTP server
 - create a connection to weewx
 
