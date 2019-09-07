@@ -17,12 +17,17 @@ Features:
 * Stores data in json format to text file (if $json_data_log = 1)
 * Stores data in txt format to text file (if $txt_data_log = 1)
 * Stores data to dummy device in FHEM server (if $fhem_data_log = 1)
+* Prepare export file for Meteonetwork (if $txt_mnw = 1)
 * If $device = "auto", device name is extracted from weather station data stream 'PASSKEY' - supports multiple WS
 
 
 Usage:
 
-* Set your WS to upload to this script (e.g. http://192.168.1.1/)
+* Install a webserver with php capabilities
+* create a directory named /data/report (es. /var/www/html/data/report )
+* in this directory put the index.php file
+* Configure the index.php
+* Set your GW1000 Ecowitt to upload to this script (e.g. http://192.168.1.4/data/report/index.php)
 
 */
 
@@ -61,11 +66,12 @@ error_reporting(E_ALL);
 ini_set('display_errors', 'on');
 
 # Settings: General
-$device = "auto";  # Use 'auto' for automatic name from PASSKEY else uses the name 
-$json_data_log = 1;
-$txt_data_log = 1;
-$fhem_data_log = 0;
-$forward_data = 1;
+$device = "auto";  	# Use 'auto' for automatic name from PASSKEY else uses the name 
+$json_data_log = 1; 	# Activate the export to JSON. Set always to 1 
+$txt_data_log = 1; 	# Activate the export to .csv
+$fhem_data_log = 0; 	# Activate the forward to FHEM server
+$forward_data = 1; 	# Activate the forward to Meteotemplate web site
+$txt_mnw = 1; 		# Activate the FTP for the Meteonetwork string
 
 # Settings: FHEM
 $FHEM_server = "127.0.0.1";
@@ -76,9 +82,20 @@ $json_data_logdir = "/var/log/ecowitt";
 $txt_data_logdir = "/var/log/ecowitt";
 
 # Settings: Forward to meteotemplate server
-#$forward_server = "www.kwos.org/marinadimontemarciano/api.php";
 $forward_server = "192.168.2.205/marinadimontemarciano/api.php";
 $forward_server_password = "******";
+
+# Setting for Meteonetwork export file
+$station_mnw = "mcr063";  		# This is the name of the station received by Meteonetwork registration
+$txt_dir_mnw = "/var/log/ecowitt";  	# Directory where will be store the temp file (e.g. mcr063.txt )
+$ftp_mnw = "ftp.kwos.org"; 		# FTP Server where will be stored the file for Meteonetwork (e.g. mcr063.txt )
+$ftp_user_mnw = "******"; 		# User of the FTP server
+$ftp_pass_mnw = "******"; 		# Password of the FTP server 
+$ftp_dir_mnw = "/www.kwos.org/marinadimontemarciano/"; 		# Rememeber the "/" at the end, this is a directory
+
+
+
+
 
 # *** SETTINGS END ***
 
@@ -226,6 +243,86 @@ if ( $fhem_data_log == 1 )
         fclose($conn);
     }
 }
+
+# Specifiche del file inviato dalla stazione al server Mnw formato file: file di testo con campi separati da ";" 
+# nome file: nomestazione.txt (con nome stazione si intende il codice assegnato da mnw) separatore decimali: "."
+# separatore migliaia: nessuno
+# campi presenti nel file:
+# 1.    Station - codice Stazione
+# 2.    Date - Data rilevamento (gg/mm/aa) . 
+# 3.    Time - Ora rilevamento (hh:mm)
+# 4.    TempOut - Temperatura esterna (°C)
+# 5.    Pres - Pressione (Hpa)
+# 6.    HumOut Umidita' relativa esterna (%)
+# 7.    Wind - Velocità del vento (km/h)
+# 8.    Dir - Direzione del vento (°)
+# 9.    Gust - Massima raffica (km/h)
+# 10.   RainRate - Rain rate (mm/h)
+# 11.   Rain - Pioggia giornaliera (mm)
+# 12.   DewPoint - DewPoint (°C)
+# 13.   Software - Nome del software ( un nome generico )
+# 14.   Versione - Versione del software 
+# 15.   TempIn - Temperatura interna (°C)
+# 16.   HumIn - Umidità interna (%)
+# 17.   UVI - Radiazione solare (UVI)
+# 18.   Radiazione Solare W/m2
+# dato non presente indicare “-99999”. Ultima riga in basso l’ultimo dato . Se non si puo’ mandare tutto l’archivio della giornata basta mandare solo l’ultimo dato , una riga sola .  Di norma il file contiene i dati degli ultimi 2 giorni . 
+#
+# vnt214;18/08/15;00:05;20.4;1010.2;90;0.0;180;3.2;0.0;0.0;18.7;WL02;0.1;-99999;-99999;-99999;-99999; 
+
+if ( $txt_mnw == 1 )
+{
+
+    @$weather_data_mnw['Station'] = $station_mnw;
+    @$weather_data_mnw['Date'] = gmdate("d-m-y");
+    @$weather_data_mnw['Time'] = gmdate("H:i");
+    @$weather_data_mnw['TempOut'] = $weather_data['tempc'] ;
+    @$weather_data_mnw['Pres'] = $weather_data['baromabshpa'] ;
+    @$weather_data_mnw['HumOut'] = $weather_data['humidity'] ;
+    @$weather_data_mnw['Wind'] = $weather_data['windspeedkmh'] ;
+    @$weather_data_mnw['Dir'] = $weather_data['winddir'] ;
+    @$weather_data_mnw['Gust'] = $weather_data['windgustkmh'] ;
+    @$weather_data_mnw['RainRate'] = $weather_data['rainratemm'] ;
+    @$weather_data_mnw['Rain'] = $weather_data['dailyrainmm'] ;
+    @$weather_data_mnw['DewPoint'] = "-99999" ;
+    @$weather_data_mnw['Software'] = "EcowittGate" ;
+    @$weather_data_mnw['Versione'] = "XX" ;
+    @$weather_data_mnw['TempIn'] = $weather_data['tempinc'] ;
+    @$weather_data_mnw['HumIn'] = $weather_data['humidityin'] ;
+    @$weather_data_mnw['SolarRad'] = $weather_data['solarradiation'] ;
+    @$weather_data_mnw['UVI'] = $weather_data['uv'] ;
+
+    $stringa = @$weather_data_mnw['Station'] . ";" . @$weather_data_mnw['Date'] . ";" . @$weather_data_mnw['Time'] . ";" . @$weather_data_mnw['TempOut'] . ";" . @$weather_data_mnw['Pres'] . ";" . @$weather_data_mnw['HumOut'] . ";" . @$weather_data_mnw['Wind'] . ";" . @$weather_data_mnw['Dir'] . ";" . @$weather_data_mnw['Gust'] . ";" . @$weather_data_mnw['RainRate'] . ";" . @$weather_data_mnw['Rain'] . ";" . @$weather_data_mnw['Rain'] . ";" . @$weather_data_mnw['DewPoint'] . ";" . @$weather_data_mnw['Software'] . ";" . @$weather_data_mnw['Versione'] . ";" . @$weather_data_mnw['TempIn'] . ";" . @$weather_data_mnw['HumIn'] . ";" . @$weather_data_mnw['SolarRad'] . ";" . @$weather_data_mnw['UVI'] . "\n";
+
+    $txt_mnw_logfile = $txt_dir_mnw . "/" . $station_mnw . ".txt";
+    $file = fopen($txt_mnw_logfile, 'w');
+    fwrite($file, $stringa);
+    fclose($file);
+
+	// set up basic connection
+	$conn_id = ftp_connect($ftp_mnw);
+
+	// login with username and password
+	$login_result = ftp_login($conn_id, $ftp_user_mnw, $ftp_pass_mnw);
+	$remote_file = $ftp_dir_mnw . $station_mnw . ".txt";
+
+	// turn passive mode on
+	ftp_pasv($conn_id, true);
+
+	// upload a file
+	if (ftp_put($conn_id, $remote_file, $txt_mnw_logfile, FTP_ASCII)) {
+ 		print "successfully uploaded $txt_mnw_logfile\n";
+	} else {
+ 		print "There was a problem while uploading $txt_mnw_logfile\n";
+	}
+
+	// close the connection
+	ftp_close($conn_id);
+
+    	#print($stringa);
+
+}
+
 
 print("success\n");
 
