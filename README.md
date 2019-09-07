@@ -53,3 +53,4 @@ jq -r '.tempc' weather_XXXXXXXXXXXXXXXX.json
 - Configure it
 - Configure the GW1000 with the setup you read in the Plugin page
 
+![Example of plugin admin page](https://raw.githubusercontent.com/iz0qwm/ecowitt_http_gateway/master/ecowitt_plugin2.png)
