@@ -121,6 +121,21 @@
 							CSV data will be saved to: <b><?php echo $baseURL?>plugins/ecowitt/report/</b>
 							<br><br>
 						</td>
+					</tr>						
+					<tr>
+						<td style="text-align:left;width:300px" colspan="2">
+							<?php
+							$dir = "./";
+							$allFiles = scandir($dir);
+							$files = preg_grep("/^(\.|\.\.|report|(.*)\.php|(.*)\.txt|(.*)\.csv)$/",$allFiles, PREG_GREP_INVERT);
+							foreach($files as $file){
+								echo "JSON file is: <b><a href='http://".$_SERVER[HTTP_HOST].str_replace('setup.php', $file, $_SERVER[REQUEST_URI])."' target=_blank>http://".$_SERVER[HTTP_HOST].str_replace('setup.php', $file, $_SERVER[REQUEST_URI])."</a></b>";
+							}	
+							?>
+							
+							
+							<br><br>
+						</td>
 					</tr>					
 				</table>
 				<div style="width:50%;text-align:center;margin:0 auto">
