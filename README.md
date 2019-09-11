@@ -32,7 +32,7 @@ When the GW1000 will contact the web site, the index.php will do these functions
 - Install jq ( for JSON query )
 - Create directory Es. /var/www/html/data/report/
 - Create /var/log/ecowitt with chmod 777
-- Put file: index.php 
+- Put file: index.php in /var/www/html/data/report/
 - Configure index.php
 - Configure GW1000 to send data to you server
 
