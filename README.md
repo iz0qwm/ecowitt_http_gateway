@@ -49,7 +49,7 @@ jq -r '.tempc' weather_XXXXXXXXXXXXXXXX.json
 <b><i>Install this plugin if you don't want to install the previous gateway, or you only need to update your Meteotemplate web site. You will not store any data locally in your network</b></i>
 
 - Download it from the repository
-- Install it in the plugin directory of your template website, just like another plugin. (put in your plugins directory only the directory called <i>ecowitt</i> without the version number. 
+- Install it in the plugin directory of your template website, just like another plugin. (put in your plugins directory only the directory called <i>ecowitt</i> without the version number.) 
 - Go in the Plugin setup page, via Admin Panel of Meteotemplate
 - Configure it
 - Configure the GW1000 with the setup you read in the Plugin page
