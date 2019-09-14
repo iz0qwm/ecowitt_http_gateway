@@ -24,7 +24,8 @@ When the GW1000 will contact the web site, the index.php will do these functions
 1) creates a .JSON file in /var/log/ecowitt ( overwrited every update, contains only last data )<br>
 2) creates a .CSV file in /var/log/ecowitt ( appended every update, contains all data )<br>
 3) converts in metric all data a resend to a Meteotemplate web site on Internet<br>
-4) can create and send via FTP a file for the weather station registered on Meteonetwork.it  
+4) can create and send via FTP a file for the weather station registered on Meteonetwork.it 
+5) creates a weewx.txt file in /var/log/ecowitt for the [ecowitt.py](https://raw.githubusercontent.com/iz0qwm/ecowitt_http_gateway/master/ecowitt.py) driver for WeeWX
 
 <b>SIMPLE INSTALL GUIDE</b>:
 - Install Apache
