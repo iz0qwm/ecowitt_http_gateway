@@ -126,17 +126,24 @@ $f_in_mm = 25.4;
 # Convert data
 
     # Temps
-    @$weather_data['windchillc'] = round( ( $weather_data['windchillf'] - 32 ) * 5 / 9, 2 );
     @$weather_data['tempc'] = round( ( $weather_data['tempf'] - 32 ) * 5 / 9, 2 );
     @$weather_data['temp1c'] = round( ( $weather_data['temp1f'] - 32 ) * 5 / 9, 2 );
     @$weather_data['temp2c'] = round( ( $weather_data['temp2f'] - 32 ) * 5 / 9, 2 );
     @$weather_data['tempinc'] = round( ( $weather_data['tempinf'] - 32 ) * 5 / 9, 2 );
-    @$weather_data['dewptc'] = round( ( $weather_data['dewptf'] - 32 ) * 5 / 9, 2 );
     
     # Speeds
     @$weather_data['windgustkmh'] = round( $weather_data['windgustmph'] * $f_mph_kmh, 2 );
     @$weather_data['windspeedkmh'] = round( $weather_data['windspeedmph'] * $f_mph_kmh, 2 );
     
+
+    # Calculated
+    @$weather_data['windchillc'] = round((13.12 + 0.6215 * @$weather_data['tempc'] - 11.37 * pow(@$weather_data['windspeedkmh'],0.16) + 0.3965 * @$weather_data['tempc'] * pow(@$weather_data['windspeedkmh'],0.16)), 1);
+    @$weather_data['windchillf'] = round( ( $weather_data['windchillc'] * 9 / 5 ) + 32, 2 );
+
+    @$weather_data['dewptc'] = round(((pow(($weather_data['humidity']/100), 0.125))*(112+0.9*@$weather_data['tempc'])+(0.1*@$weather_data['tempc'])-112),1);
+    @$weather_data['dewptf'] = round( ( $weather_data['dewptc'] * 9 / 5 ) + 32, 2 );
+
+
     # Distances
     @$weather_data['rainmm'] = round( $weather_data['rainin'] * $f_in_mm, 2 );
     @$weather_data['dailyrainmm'] = round( $weather_data['dailyrainin'] * $f_in_mm, 2 );
