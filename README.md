@@ -72,11 +72,11 @@ To use this driver, put this file in the weewx drivers directory (i.e. /usr/shar
 the following changes to weewx.conf:<br>
 <br>
 <pre>
-<b>[Station]<br>
-     station_type = ecowitt<br>
-[ecowitt]<br>
-     poll_interval = 65                    # number of seconds, just a little more than the GW1000 update time<br>
-     path = /var/log/ecowitt/weewx.txt     # location of data file<br>
-     driver = weewx.drivers.ecowitt<br>
+<b>[Station]
+     station_type = ecowitt
+[ecowitt]
+     poll_interval = 65                    # number of seconds, just a little more than the GW1000 update time
+     path = /var/log/ecowitt/weewx.txt     # location of data file
+     driver = weewx.drivers.ecowitt
 </b>
 </pre>
