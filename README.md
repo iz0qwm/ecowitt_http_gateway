@@ -68,7 +68,7 @@ barometer=29.719<br>
 pressure=29.719<br>
 outHumidity=70<br>
 <br>
-To use this driver, put this file in the weewx drivers directory (i.e. /usr/share/weewx/weewx/drivers ), then make<br>
+To use this driver, put the ecowitt.py file in the weewx drivers directory (i.e. /usr/share/weewx/weewx/drivers ), then make<br>
 the following changes to weewx.conf:<br>
 <br>
 <pre>
