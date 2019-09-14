@@ -15,6 +15,7 @@ Features:
 * Forwards data to external meteotemplate server (if $forward_data = 1)
 * Converts data to other units (°C, km/h, KTS, mm) if $convert_data = 1
 * Stores data in json format to text file (if $json_data_log = 1)
+* Stores data in txt format to text file for weewx driver (if $txt_weewx = 1)
 * Stores data in txt format to text file (if $txt_data_log = 1)
 * Stores data to dummy device in FHEM server (if $fhem_data_log = 1)
 * Prepare export file for Meteonetwork (if $txt_mnw = 1)
@@ -68,10 +69,11 @@ ini_set('display_errors', 'on');
 # Settings: General
 $device = "auto";  	# Use 'auto' for automatic name from PASSKEY else uses the name 
 $json_data_log = 1; 	# Activate the export to JSON. Set always to 1 
-$txt_data_log = 1; 	# Activate the export to .csv
+$txt_data_log = 0; 	# Activate the export to .csv
 $fhem_data_log = 0; 	# Activate the forward to FHEM server
-$forward_data = 1; 	# Activate the forward to Meteotemplate web site
-$txt_mnw = 1; 		# Activate the FTP for the Meteonetwork string
+$forward_data = 0; 	# Activate the forward to Meteotemplate web site
+$txt_mnw = 0; 		# Activate the FTP for the Meteonetwork string
+$txt_weewx = 1; 	# Activate the export to .txt for weewx driver 
 
 # Settings: FHEM
 $FHEM_server = "127.0.0.1";
@@ -93,7 +95,8 @@ $ftp_user_mnw = "******"; 		# User of the FTP server
 $ftp_pass_mnw = "******"; 		# Password of the FTP server 
 $ftp_dir_mnw = "/www.kwos.org/marinadimontemarciano/"; 		# Rememeber the "/" at the end, this is a directory
 
-
+# Setting for weewx driver
+$txt_dir_weewx = "/var/log/ecowitt";
 
 
 
@@ -324,6 +327,39 @@ if ( $txt_mnw == 1 )
 }
 
 
+if ( $txt_weewx == 1 )
+{
+    @$weather_data_weewx['outTemp'] = $weather_data['tempf'] ;
+    @$weather_data_weewx['barometer'] = $weather_data['baromrelin'] ;
+    @$weather_data_weewx['pressure'] = $weather_data['baromabsin'] ;
+    @$weather_data_weewx['outHumidity'] = $weather_data['humidity'] ;
+    @$weather_data_weewx['windSpeed'] = $weather_data['windspeedmph'] ;
+    @$weather_data_weewx['windDir'] = $weather_data['winddir'] ;
+    @$weather_data_weewx['windGust'] = $weather_data['windgustmph'] ;
+    @$weather_data_weewx['rainRate'] = $weather_data['rainratein'] ;
+    @$weather_data_weewx['rain_total'] = $weather_data['totalrainin'] ;
+    @$weather_data_weewx['inTemp'] = $weather_data['tempinf'] ;
+    @$weather_data_weewx['inHumidity'] = $weather_data['humidityin'] ;
+    @$weather_data_weewx['radiation'] = $weather_data['solarradiation'] ;
+    @$weather_data_weewx['UV'] = $weather_data['uv'] ;
+    @$weather_data_weewx['windchill'] = $weather_data['windchillf'] ;
+    @$weather_data_weewx['dewpoint'] = $weather_data['dewptf'] ;
+    @$weather_data_weewx['extraTemp1'] = $weather_data['temp1f'] ;
+    @$weather_data_weewx['extraHumid1'] = $weather_data['humidity1'] ;
+    @$weather_data_weewx['soilTemp1'] = $weather_data['soilmoisture1'] ;
+    @$weather_data_weewx['txBatteryStatus'] = $weather_data['wh80batt'] ;
+    @$weather_data_weewx['rainBatteryStatus'] = $weather_data['wh40batt'] ;
+    @$weather_data_weewx['outTempBatteryStatus'] = $weather_data['batt1'] ;
+
+
+    $stringa = "outTemp=" . @$weather_data_weewx['outTemp'] . "\nbarometer=" . @$weather_data_weewx['barometer'] . "\npressure=" . @$weather_data_weewx['pressure'] . "\noutHumidity=" . @$weather_data_weewx['outHumidity'] . "\nwindSpeed=" . @$weather_data_weewx['windSpeed'] . "\nwindDir=" . @$weather_data_weewx['windDir'] . "\nwindGust=" . @$weather_data_weewx['windGust'] . "\nrainRate=" . @$weather_data_weewx['rainRate'] . "\nrain_total=" . @$weather_data_weewx['rain_total'] . "\ninTemp=" . @$weather_data_weewx['inTemp'] . "\ninHumidity=" . @$weather_data_weewx['inHumidity'] . "\nradiation=" . @$weather_data_weewx['radiation'] . "\nUV=" . @$weather_data_weewx['UV'] . "\nwindchill=" . @$weather_data_weewx['windchill'] . "\ndewpoint=" . @$weather_data_weewx['dewpoint'] . "\nextraTemp1=" . @$weather_data_weewx['extraTemp1'] . "\nextraHumid1=" . @$weather_data_weewx['extraHumid1'] . "\nsoilTemp1=" . @$weather_data_weewx['soilTemp1'] . "\ntxBatteryStatus=" . @$weather_data_weewx['txBatteryStatus'] . "\nrainBatteryStatus=" . @$weather_data_weewx['rainBatteryStatus'] . "\noutTempBatteryStatus=" . @$weather_data_weewx['outTempBatteryStatus'] . "\n";
+
+    $txt_weewx_logfile = $txt_dir_weewx . "/weewx.txt";
+    $file = fopen($txt_weewx_logfile, 'w');
+    fwrite($file, $stringa);
+    fclose($file);
+
+}
 print("success\n");
 
 ?>
