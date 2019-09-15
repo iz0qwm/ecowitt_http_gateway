@@ -78,6 +78,9 @@ Modify weewx.conf:
 <pre>
 <b>[Station]
      station_type = ecowitt
+</pre>
+Check the automatic addition at the end of weewx.conf:<br>
+<pre>
 [ecowitt]
      poll_interval = 65                    # number of seconds, just a little more than the GW1000 update time
      path = /var/log/ecowitt/weewx.txt     # location of data file
