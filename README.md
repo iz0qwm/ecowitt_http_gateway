@@ -6,9 +6,9 @@ The GW1000 allows sending data both to Ecowitt.net and Wunderground, even to an 
 of the two previous protocols. <br>
 We know the Wunderground protocol and we know that it doesn't send UV and PM2.5 data, nor ground temperature or
 other additional sensors, so you need to select the Ecowitt protocol.<br>
-<br><br>
-Now to permit this script to work, we need a web server to which the GW1000 need to send data.<br>
-<br><br>
+
+Now to permit this script to work, we need a web server to which the GW1000 need to send data.
+
 <b>REQUIREMENTS</B>
 <br>
 The web server must have these possibilities:
@@ -41,9 +41,6 @@ Look in /var/log/ecowitt to read fields using 'jq'
 
 jq -r '.tempc' weather_XXXXXXXXXXXXXXXX.json
 
-<b>NEXT STEPS of IMPROVEMENTS</b>:
-- send the .JSON file on an FTP server
-- create a connection to weewx
 
 # ecowitt Meteotemplate plugin
 <i>Simple plugin for [Meteotemplate](http://www.meteotemplate.com/), wonderful template developed by Jachym.</i><br><br>
