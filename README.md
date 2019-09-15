@@ -68,6 +68,29 @@ barometer=29.719<br>
 pressure=29.719<br>
 outHumidity=70<br>
 <br>
+## Automatic extension installation
+
+Run the extension installer:
+
+<b>wee_extension --install weewx-ecowitt-x.x.tgz</b>
+<br><br>
+Modify weewx.conf:
+<pre>
+<b>[Station]
+     station_type = ecowitt
+[ecowitt]
+     poll_interval = 65                    # number of seconds, just a little more than the GW1000 update time
+     path = /var/log/ecowitt/weewx.txt     # location of data file
+     driver = weewx.drivers.ecowitt
+</b>
+</pre>
+
+Restart weewx<br>
+<pre>
+sudo /etc/init.d/weewx stop
+sudo /etc/init.d/weewx start
+</pre>
+## Manual installation
 To use this driver, put the ecowitt.py file in the weewx drivers directory (i.e. /usr/share/weewx/weewx/drivers ), then make<br>
 the following changes to weewx.conf:<br>
 <br>
