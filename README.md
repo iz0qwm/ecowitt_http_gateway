@@ -27,7 +27,7 @@ When the GW1000 will contact the web site, the index.php will do these functions
 4) can create and send via FTP a file for the weather station registered on Meteonetwork.it 
 5) creates a weewx.txt file in /var/log/ecowitt for the [ecowitt.py](https://raw.githubusercontent.com/iz0qwm/ecowitt_http_gateway/master/ecowitt.py) driver for WeeWX
 
-<b>SIMPLE INSTALL GUIDE</b>:
+<b>HOW TO INSTALL</b>:
 - Install Apache
 - Install PHP
 - Install jq ( for JSON query )
