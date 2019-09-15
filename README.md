@@ -69,15 +69,17 @@ outHumidity=70<br>
 
 Run the extension installer:
 
-<b>wee_extension --install weewx-ecowitt-x.x.tgz</b>
+<b>sudo wee_extension --install weewx-ecowitt-x.x.tgz</b>
 <br><br>
 Modify weewx.conf:
 <pre>
 <b>[Station]
      station_type = ecowitt
+</b>
 </pre>
 Check the automatic addition at the end of weewx.conf:<br>
 <pre>
+<b>
 [ecowitt]
      poll_interval = 65                    # number of seconds, just a little more than the GW1000 update time
      path = /var/log/ecowitt/weewx.txt     # location of data file
@@ -87,8 +89,10 @@ Check the automatic addition at the end of weewx.conf:<br>
 
 Restart weewx<br>
 <pre>
+<b>
 sudo /etc/init.d/weewx stop
 sudo /etc/init.d/weewx start
+</b>
 </pre>
 ## Manual installation
 To use this driver, put the ecowitt.py file in the weewx drivers directory (i.e. /usr/share/weewx/weewx/drivers ), then make<br>
