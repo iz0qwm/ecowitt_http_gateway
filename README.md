@@ -4,20 +4,20 @@
   
 The GW1000 allows sending data both to Ecowitt.net and Wunderground, even to an external site as long as you select one
 of the two previous protocols. <br>
-We know the Wunderground protocol and we know that it don't send UV and PM2.5 data, nor ground temperature or
-other additional sensors, so you need to select the Ecowitt protocol.
-
-Now to permit this script to work, we need a web server to which the GW1000 need to send data.
-
+We know the Wunderground protocol and we know that it doesn't send UV and PM2.5 data, nor ground temperature or
+other additional sensors, so you need to select the Ecowitt protocol.<br>
+<br><br>
+Now to permit this script to work, we need a web server to which the GW1000 need to send data.<br>
+<br><br>
 <b>REQUIREMENTS</B>
-
+<br>
 The web server must have these possibilities:
 - to create a directory named <b>/data/report</b> (es. /var/www/html/data/report )
 - in this directory will be put the <b>index.php</b> file 
 
 So, the web site will look like: http://192.168.1.4/data/report/index.php<br>
-In the GW1000 configuration it will be necessary writing only the IP address, es. 192.168.1.4 and specify the update rate.
-
+In the GW1000 configuration it will be necessary writing only the IP address, es. 192.168.1.4 and specify the update rate.<br>
+<br>
 I recommend having this web server on a raspberry, in the same network of the GW1000, so the script can also be used to store data without losing them in case of Internet connection failure<br> 
 When the GW1000 will contact the web site, the index.php will do these functions:
 
