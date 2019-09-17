@@ -96,6 +96,9 @@ the following changes to weewx.conf:<br>
 </b>
 </pre>
 
+<b>NOTE</b><br>
+If you don't want to use the ecowitt_http_gateway, you can use the [Interceptor driver](https://github.com/matthewwall/weewx-interceptor) to sniff data of your GW1000.
+
 # ecowitt Meteotemplate plugin
 <i>Simple plugin for [Meteotemplate](http://www.meteotemplate.com/), wonderful template developed by Jachym.</i><br><br>
 <b><i>Install this plugin if you don't want to install the previous gateway, or you only need to update your Meteotemplate web site. You will not store any data locally in your network</b></i>
