@@ -54,6 +54,9 @@
 #     poll_interval = 65                    # number of seconds, just a little more the GW1000 update time
 #     path = /var/log/ecowitt/weewx.txt     # location of data file
 #     driver = weewx.drivers.ecowitt
+#     mode = server
+#     address = localhost
+#     port = 9999
 #
 # The variables in the file have the same names from those in the database
 # so you don't need a mapping section
@@ -73,11 +76,20 @@
 from __future__ import with_statement
 import syslog
 import time
+import BaseHTTPServer
+import SocketServer
+import re
+import Queue
+import threading
+import urlparse
 
 import weewx.drivers
 
 DRIVER_NAME = 'ecowitt'
-DRIVER_VERSION = "0.1"
+DRIVER_VERSION = "1.0"
+
+DEFAULT_ADDR = ''
+DEFAULT_PORT = 8000
 
 def logmsg(dst, msg):
     syslog.syslog(dst, 'ecowitt: %s' % msg)
@@ -91,6 +103,9 @@ def loginf(msg):
 def logerr(msg):
     logmsg(syslog.LOG_ERR, msg)
 
+def _obfuscate_passwords(msg):
+    return re.sub(r'(PASSWORD|PASSKEY)=[^&]+', r'\1=XXXX', msg)
+
 def _get_as_float(d, s):
     v = None
     if s in d:
@@ -103,10 +118,12 @@ def _get_as_float(d, s):
 def loader(config_dict, engine):
     return ecowittDriver(**config_dict[DRIVER_NAME])
 
+queue = Queue.Queue()
+
 class ecowittDriver(weewx.drivers.AbstractDevice):
     """weewx driver for ecowitt GW1000"""
 
-    def __init__(self, **stn_dict):
+    def __init__(self, **stn_dict): 
         # where to find the data file
         self.path = stn_dict.get('path', '/var/log/ecowitt/weewx.txt')
         # how often to poll the weather data file, seconds
@@ -114,13 +131,110 @@ class ecowittDriver(weewx.drivers.AbstractDevice):
         # mapping from variable names to weewx names
         self.label_map = stn_dict.get('label_map', {})
         self.last_rain = None
- 
+	self.mode = stn_dict.get('mode') 
+	self.address = stn_dict.get('address')
+	self.port = stn_dict.get('port')
+
         loginf("data file is %s" % self.path)
         loginf("polling interval is %s" % self.poll_interval)
         loginf('label map is %s' % self.label_map)
 
+        if self.mode == 'normal':
+	    loginf("mode is %s" % self.mode)
+            #self.genLoopPackets()
+        elif self.mode == 'server':
+            loginf("mode is %s" % self.mode)
+            loginf("address is %s" % self.address)
+            loginf("port is %s" % self.port)
+
+            handler = None	
+
+            self._server = self.TCPServer(self.address, self.port, handler)
+
+            self._server_thread = threading.Thread(target=self.run_server)
+            self._server_thread.setDaemon(True)
+            self._server_thread.setName('ServerThread')
+            self._server_thread.start()
+            self._queue_timeout = int(stn_dict.pop('queue_timeout', 10))
+
+        else:
+            raise Exception("unrecognized mode '%s'" % self.mode)
+
+    def run_server(self):
+        self._server.run()
+
+    def stop_server(self):
+        self._server.stop()
+        self._server = None
+
+    def get_queue(self):
+        return queue
+
+    class Server(object):
+        def run(self):
+            pass
+        def stop(self):
+            pass
+
+    class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
+
+        def get_response(self):
+            # default reply is a simple 'OK' string
+            return 'OK'
+
+        def reply(self):
+            # standard reply is HTTP code of 200 and the response string
+            response = bytes(self.get_response())
+            self.send_response(200)
+            self.send_header("Content-Length", str(len(response)))
+            self.end_headers()
+            self.wfile.write(response)            
+
+        def do_POST(self):
+            # get the payload from an HTTP POST
+            length = int(self.headers["Content-Length"])
+            data = str(self.rfile.read(length))
+            logdbg('POST: %s' % _obfuscate_passwords(data))
+            queue.put(data)
+            self.reply()
+
+        def do_PUT(self):
+            pass
+
+        def do_GET(self):
+            # get the query string from an HTTP GET
+            data = urlparse.urlparse(self.path).query
+            logdbg('GET: %s' % _obfuscate_passwords(data))
+            queue.put(data)
+            self.reply()
+
+        # do not spew messages on every connection
+        def log_message(self, _format, *_args):
+            pass
+
+
+    class TCPServer(Server, SocketServer.TCPServer):
+        daemon_threads = True
+        allow_reuse_address = True
+
+        def __init__(self, address, port, handler):
+            if handler is None:
+                handler = ecowittDriver.Handler
+            loginf("listen on %s:%s" % (address, port))
+            SocketServer.TCPServer.__init__(self, (address, int(port)), handler)
+
+        def run(self):
+            logdbg("start tcp server")
+            self.serve_forever()
+
+        def stop(self):
+            logdbg("stop tcp server")
+            self.shutdown()
+            self.server_close()
+	
     def genLoopPackets(self):
         while True:
+	 if self.mode == 'normal':
             # read whatever values we can get from the file
             data = {}
             try:
@@ -142,6 +256,117 @@ class ecowittDriver(weewx.drivers.AbstractDevice):
             self._augment_packet(_packet)
             yield _packet
             time.sleep(self.poll_interval)
+	 elif self.mode == 'server':
+            try:
+	        pkt = dict()
+            	data = self.get_queue().get(True, self._queue_timeout)
+            	logdbg('raw data: %s' % data)
+		parts = data.split('&')
+            	for x in parts:
+                  if not x:
+                 	continue
+                  if '=' not in x:
+                    loginf("unexpected un-assigned variable '%s'" % x)
+                    continue
+                  (n, v) = x.split('=')
+                  n = n.strip()
+                  v = v.strip()
+                  try:
+		    rain_total = None
+                    if n == 'tempf':
+                        pkt['outTemp'] = float(v)
+                    elif n == 'baromrelin':
+                        pkt['barometer'] = float(v)
+                    elif n == 'baromabsin':
+                        pkt['pressure'] = float(v)
+                    elif n == 'humidity':
+                        pkt['outHumidity'] = float(v)
+                    elif n == 'windspeedmph':
+                        pkt['windSpeed'] = float(v)
+                    elif n == 'windgustmph':
+                        pkt['windGust'] = float(v)
+                    elif n == 'winddir':
+                        pkt['winddir'] = float(v)
+                    elif n == 'rainratein':
+                        pkt['rainRate'] = float(v)
+                    elif n == 'totalrainin':
+                        pkt['rain_total'] = float(v)
+                    elif n == 'tempinf':
+                        pkt['inTemp'] = float(v)
+                    elif n == 'humidityin':
+                        pkt['inHumidity'] = float(v)
+                    elif n == 'solarradiation':
+                        pkt['radiation'] = float(v)
+                    elif n == 'uv':
+                        pkt['uv'] = float(v)
+                    elif n == 'dewptf':
+                        pkt['dewpoint'] = float(v)
+                    elif n == 'temp1f':
+                        pkt['extraTemp1'] = float(v)
+                    elif n == 'humidity1':
+                        pkt['extraHumid1'] = float(v)
+                    elif n == 'soilmoisture1':
+                        pkt['soilTemp1'] = float(v)
+                    elif n == 'wh80batt':
+                        pkt['txBatteryStatus'] = float(v)
+                    elif n == 'wh40batt':
+                        pkt['rainBatteryStatus'] = float(v)
+                    elif n == 'batt1':
+                        pkt['outTempBatteryStatus'] = float(v)
+                    else:
+                        loginf("unknown element '%s' with value '%s'" % (n, v))
+                  except (ValueError, IndexError), e:
+                    logerr("decode failed for %s '%s': %s" % (n, v, e))
+
+                pkt['rain'] = weewx.wxformulas.calculate_rain(
+                    pkt['rain_total'], self.last_rain)
+                self.last_rain = pkt['rain_total']
+
+                pkt['windchill'] = 35.74 + 0.6215*pkt['outTemp'] + (0.4275*pkt['outTemp'] - 35.75) * (pkt['windSpeed'] ** 0.16)
+		outTemp_c = (pkt['outTemp'] - 32) * 5 / 9 
+	        dewpoint_c = ((pkt['outHumidity'] / 100) ** 0.125) * (112 + 0.9 * outTemp_c) + (0.1 * outTemp_c) - 112
+                pkt['dewpoint'] = (dewpoint_c * (9/5.0)) + 32
+
+                logdbg('raw packet: %s' % pkt)
+
+
+                # map the data into a weewx loop packet
+                _packet = {'dateTime': int(time.time() + 0.5),
+                       'usUnits': weewx.US,
+                       'rain': pkt['rain'],
+                       'outTemp': pkt['outTemp'],
+                       'barometer': pkt['barometer'],
+                       'pressure': pkt['pressure'],
+                       'humidity': pkt['outHumidity'],
+                       'windSpeed': pkt['windSpeed'],
+                       'windGust': pkt['windGust'],
+                       'windDir': pkt['winddir'],
+                       'rainRate': pkt['rainRate'],
+                       'inTemp': pkt['inTemp'],
+                       'inHumidity': pkt['inHumidity'],
+                       'radiation': pkt['radiation'],
+                       'uv': pkt['uv'],
+                       'windchill': pkt['windchill'],
+                       'dewpoint': pkt['dewpoint'],
+                       'extraTemp1': pkt['extraTemp1'],
+                       'extraHumid1': pkt['extraHumid1'],
+                       'soilTemp1': pkt['soilTemp1'],
+                       'txBatteryStatus': pkt['txBatteryStatus'],
+                       'rainBatteryStatus': pkt['rainBatteryStatus'],
+                       'outTempBatteryStatus': pkt['outTempBatteryStatus']
+                        }
+
+                logdbg('decoded packet: %s' % _packet)
+
+                yield _packet
+
+            except Queue.Empty:
+                logdbg('empty queue')
+
+            time.sleep(self.poll_interval)
+         else:
+            raise Exception("unrecognized mode '%s'" % self.mode)
+
 
     def _augment_packet(self, packet):
         packet['rain'] = weewx.wxformulas.calculate_rain(
