@@ -12,14 +12,14 @@ Now to permit this script to work, we need a web server to which the GW1000 need
 <b>REQUIREMENTS</B>
 <br>
 The web server must have these possibilities:
-- to create a directory named <b>/data/report</b> (es. /var/www/html/data/report )
+- create a directory named <b>/data/report</b> (es. /var/www/html/data/report )
 - in this directory will be put the <b>index.php</b> file 
 
-So, the web site will look like: http://192.168.1.4/data/report/index.php<br>
+So, the web site will look like: http://192.168.2.185/data/report/index.php<br>
 In the GW1000 configuration it will be necessary writing only the IP address, es. 192.168.1.4 and specify the update rate.<br>
 <br>
 I recommend having this web server on a raspberry, in the same network of the GW1000, so the script can also be used to store data without losing them in case of Internet connection failure<br> 
-When the GW1000 will contact the web site, the index.php will do these functions:
+When the GW1000 will contact the web site, the <i>index.php</i> will do these functions:
 
 1) creates a .JSON file in /var/log/ecowitt ( overwrited every update, contains only last data )<br>
 2) creates a .CSV file in /var/log/ecowitt ( appended every update, contains all data )<br>
@@ -37,9 +37,9 @@ When the GW1000 will contact the web site, the index.php will do these functions
 - Configure index.php
 - Configure GW1000 to send data to your server
 
-Look in /var/log/ecowitt to read fields using 'jq'
-
-jq -r '.tempc' weather_XXXXXXXXXXXXXXXX.json
+<i>Note:</i><br>
+<i>Look in /var/log/ecowitt to read fields using 'jq'<br>
+jq -r '.tempc' weather_XXXXXXXXXXXXXXXX.json</i>
 
 
 # ecowitt WeeWX driver
