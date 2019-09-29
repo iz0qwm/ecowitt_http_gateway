@@ -69,9 +69,9 @@ ini_set('display_errors', 'on');
 # Settings: General
 $device = "auto";  	# Use 'auto' for automatic name from PASSKEY else uses the name 
 $json_data_log = 1; 	# Activate the export to JSON. Set always to 1 
-$txt_data_log = 0; 	# Activate the export to .csv
+$txt_data_log = 1; 	# Activate the export to .csv
 $fhem_data_log = 0; 	# Activate the forward to FHEM server
-$forward_data = 0; 	# Activate the forward to Meteotemplate web site
+$forward_data = 1; 	# Activate the forward to Meteotemplate web site
 $txt_mnw = 0; 		# Activate the FTP for the Meteonetwork string
 $txt_weewx = 1; 	# Activate the export to .txt for weewx driver 
 
@@ -84,16 +84,16 @@ $json_data_logdir = "/var/log/ecowitt";
 $txt_data_logdir = "/var/log/ecowitt";
 
 # Settings: Forward to meteotemplate server
-$forward_server = "192.168.2.205/marinadimontemarciano/api.php";
-$forward_server_password = "******";
+$forward_server = "www.kwos.org/poggiocorese_ecowitt/api.php";
+$forward_server_password = "RaDa0707";
 
 # Setting for Meteonetwork export file
-$station_mnw = "mcr063";  		# This is the name of the station received by Meteonetwork registration
-$txt_dir_mnw = "/var/log/ecowitt";  	# Directory where will be store the temp file (e.g. mcr063.txt )
-$ftp_mnw = "ftp.kwos.org"; 		# FTP Server where will be stored the file for Meteonetwork (e.g. mcr063.txt )
-$ftp_user_mnw = "******"; 		# User of the FTP server
-$ftp_pass_mnw = "******"; 		# Password of the FTP server 
-$ftp_dir_mnw = "/www.kwos.org/marinadimontemarciano/"; 		# Rememeber the "/" at the end, this is a directory
+$station_mnw = "mcr063";                # This is the name of the station received by Meteonetwork registration
+$txt_dir_mnw = "/var/log/ecowitt";      # Directory where will be store the temp file (e.g. mcr063.txt )
+$ftp_mnw = "ftp.kwos.it";               # FTP Server where will be stored the file for Meteonetwork (e.g. mcr063.txt )
+$ftp_user_mnw = "2748826@aruba.it";     # User of the FTP server
+$ftp_pass_mnw = "RaDa0707";             # Password of the FTP server
+$ftp_dir_mnw = "/www.kwos.org/poggiocorese_ecowitt/";           # Rememeber the "/" at the end, this is a directory
 
 # Setting for weewx driver
 $txt_dir_weewx = "/var/log/ecowitt";
@@ -130,12 +130,12 @@ $f_in_mm = 25.4;
     @$weather_data['temp1c'] = round( ( $weather_data['temp1f'] - 32 ) * 5 / 9, 2 );
     @$weather_data['temp2c'] = round( ( $weather_data['temp2f'] - 32 ) * 5 / 9, 2 );
     @$weather_data['tempinc'] = round( ( $weather_data['tempinf'] - 32 ) * 5 / 9, 2 );
+
     
     # Speeds
     @$weather_data['windgustkmh'] = round( $weather_data['windgustmph'] * $f_mph_kmh, 2 );
     @$weather_data['windspeedkmh'] = round( $weather_data['windspeedmph'] * $f_mph_kmh, 2 );
     
-
     # Calculated
     @$weather_data['windchillc'] = round((13.12 + 0.6215 * @$weather_data['tempc'] - 11.37 * pow(@$weather_data['windspeedkmh'],0.16) + 0.3965 * @$weather_data['tempc'] * pow(@$weather_data['windspeedkmh'],0.16)), 1);
     @$weather_data['windchillf'] = round( ( $weather_data['windchillc'] * 9 / 5 ) + 32, 2 );
@@ -178,11 +178,15 @@ if ( $forward_data == 1 )
     @$weather_data_forward['HIN'] = $weather_data['humidityin'] ;
     @$weather_data_forward['T1'] = $weather_data['temp1c'] ;
     @$weather_data_forward['H1'] = $weather_data['humidity1'] ;
+    @$weather_data_forward['T2'] = $weather_data['temp2c'] ;
+    @$weather_data_forward['H2'] = $weather_data['humidity2'] ;
+    @$weather_data_forward['SM1'] = $weather_data['soilmoisture1'] ;
+    @$weather_data_forward['PP1'] = $weather_data['pm25_ch1'] ;
 
     #@$weather_data['forward_url'] = "http://" . $forward_server . $_SERVER[REQUEST_URI];
     @$weather_data_forward['forward_url'] = "http://" . $forward_server ;
-    @$weather_data_forward['forward'] = file_get_contents($weather_data_forward['forward_url'] . "?" . "U=" . @$weather_data_forward['U'] . "&PASS=" . @$weather_data_forward['PASS'] . "&T=" . @$weather_data_forward['T'] . "&H=" . @$weather_data_forward['H'] ."&P=" . @$weather_data_forward['P'] . "&W=" . @$weather_data_forward['W'] . "&G=" . @$weather_data_forward['G'] . "&B=" . @$weather_data_forward['B'] . "&R=" . @$weather_data_forward['R'] . "&RR=" . @$weather_data_forward['RR'] . "&S=" . @$weather_data_forward['S'] . "&UV=" . @$weather_data_forward['UV'] . "&TIN=" . @$weather_data_forward['TIN'] . "&HIN=" . @$weather_data_forward['HIN'] . "&T1=" . @$weather_data_forward['T1'] . "&H1=" . @$weather_data_forward['H1'] );
-}
+    @$weather_data_forward['forward'] = file_get_contents($weather_data_forward['forward_url'] . "?" . "U=" . @$weather_data_forward['U'] . "&PASS=" . @$weather_data_forward['PASS'] . "&T=" . @$weather_data_forward['T'] . "&H=" . @$weather_data_forward['H'] ."&P=" . @$weather_data_forward['P'] . "&W=" . @$weather_data_forward['W'] . "&G=" . @$weather_data_forward['G'] . "&B=" . @$weather_data_forward['B'] . "&R=" . @$weather_data_forward['R'] . "&RR=" . @$weather_data_forward['RR'] . "&S=" . @$weather_data_forward['S'] . "&UV=" . @$weather_data_forward['UV'] . "&TIN=" . @$weather_data_forward['TIN'] . "&HIN=" . @$weather_data_forward['HIN'] . "&T1=" . @$weather_data_forward['T1'] . "&H1=" . @$weather_data_forward['H1'] . "&T2=" . @$weather_data_forward['T2'] . "&H2=" . @$weather_data_forward['H2'] .  "&SM1=" . @$weather_data_forward['SM1'] . "&PP1=" . @$weather_data_forward['PP1'] );
+
 
 # Pack data into json format
 $weather_data_json = json_encode($weather_data);
@@ -206,7 +210,7 @@ if ( $txt_data_log == 1 )
 	if (!file_exists($txt_data_logfile)) {
 		$data = json_decode($weather_data_json);
 		foreach($data as $key => $value) {
-			$string .= $key . ',';
+		       $string .= $key . ',';
 			}
 		$string .= "\n";
 		file_put_contents($txt_data_logfile, $string, FILE_APPEND);
