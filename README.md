@@ -122,4 +122,4 @@ If you don't want to use the ecowitt_http_gateway, you can use the [Interceptor 
 
 ![Example of plugin page](https://raw.githubusercontent.com/iz0qwm/ecowitt_http_gateway/master/ecowitt_plugin1.png)
 ![Example of plugin admin page](https://raw.githubusercontent.com/iz0qwm/ecowitt_http_gateway/master/ecowitt_plugin2.png)
-![Example of plugin admin page](https://raw.githubusercontent.com/iz0qwm/ecowitt_http_gateway/master/ecowitt_plugin3.jpg)
+![Example of plugin admin page](https://raw.githubusercontent.com/iz0qwm/ecowitt_http_gateway/master/ecowitt_plugin3.png)
