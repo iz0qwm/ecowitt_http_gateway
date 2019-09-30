@@ -123,3 +123,28 @@ If you don't want to use the ecowitt_http_gateway, you can use the [Interceptor 
 ![Example of plugin page](https://raw.githubusercontent.com/iz0qwm/ecowitt_http_gateway/master/ecowitt_plugin1.png)
 ![Example of plugin admin page](https://raw.githubusercontent.com/iz0qwm/ecowitt_http_gateway/master/ecowitt_plugin2.png)
 ![Example of plugin admin page](https://raw.githubusercontent.com/iz0qwm/ecowitt_http_gateway/master/ecowitt_plugin3.png)
+
+#NOTE from the issue forum
+
+Googling: https://fhem.de/
+Is a server for home automation
+
+If you already have a Meteotemplate webserver you can use 3 mode of uploading mode:
+
+1. **use the Meteotemplate plugin and configure GW1000 to send data to directly.**
+Follow only the section with title: _[ecowitt Meteotemplate plugin](https://github.com/iz0qwm/ecowitt_http_gateway/#ecowitt-meteotemplate-plugin)_
+example: http://www.kwos.org/meteotemplateweb/api.php
+Note: You have all extra sensors like soilmoisture, PM25
+
+2. **have a raspberry at home, in the internal network, with a webserver where there is the index.php** 
+Follow only the section with the title: _[ecowitt_http_gateway](https://github.com/iz0qwm/ecowitt_http_gateway/#ecowitt_http_gateway)_
+In this case you don't need the Meteotemplate plugin but you have to configure the index.php to send data via api to Meteotemplate.
+ example: http//192.168.2.185/data/report/
+Note1: You have all extra sensors like soilmoisture, PM25 sent to Meteotemplate
+Note2: You can also send data to a weewx without extra sensors
+
+4. **have a raspberry at home with weewx and weewx driver for GW1000.**
+Follow both the sections: _[ecowitt_http_gateway](https://github.com/iz0qwm/ecowitt_http_gateway/#ecowitt_http_gateway)_ and _[ecowitt WeeWX driver](https://github.com/iz0qwm/ecowitt_http_gateway/#ecowitt-weewx-driver)_
+Then configure weewx with the Meteotemplate plugin released here:
+https://github.com/matthewwall/weewx-meteotemplate
+Note: you don't have the extra sensors 
