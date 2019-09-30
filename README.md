@@ -41,7 +41,8 @@ When the GW1000 will contact the web site, the <i>index.php</i> will do these fu
 <i>Look in /var/log/ecowitt to read fields using 'jq'<br>
 jq -r '.tempc' weather_XXXXXXXXXXXXXXXX.json</i>
 
-
+#
+#
 # ecowitt WeeWX driver
 
 Called <b>ecowitt.py</b> <br>
@@ -110,6 +111,8 @@ the following changes to weewx.conf:<br>
 <b>NOTE</b><br>
 If you don't want to use the ecowitt_http_gateway, you can use the [Interceptor driver](https://github.com/matthewwall/weewx-interceptor) to sniff data of your GW1000.
 
+#
+#
 # ecowitt Meteotemplate plugin
 <i>Simple plugin for [Meteotemplate](http://www.meteotemplate.com/), wonderful template developed by Jachym.</i><br><br>
 <b><i>Install this plugin if you don't want to install the previous gateway and weewx, or if you only need to update your Meteotemplate web site. You will not store any data locally in your network</b></i>
