@@ -22,6 +22,8 @@
 	#		- Added support to CSV files
 	#   v1.2 - Sep 30, 2019
 	#	    - Added support for soilmoisture and pm25 sensors
+	#   v1.3 - Oct 20, 2019
+	#	    - Solved error for second WH31
 	#
 	############################################################################
 	
@@ -132,8 +134,8 @@
 		@$weather_data_forward['HIN'] = $weather_data['humidityin'] ;
 		@$weather_data_forward['T1'] = $weather_data['temp1c'] ;
 		@$weather_data_forward['H1'] = $weather_data['humidity1'] ;
-		@$weather_data_forward['T2'] = $weather_data['temp1c'] ;
-		@$weather_data_forward['H2'] = $weather_data['humidity1'] ;
+		@$weather_data_forward['T2'] = $weather_data['temp2c'] ;
+		@$weather_data_forward['H2'] = $weather_data['humidity2'] ;
 		@$weather_data_forward['SM1'] = $weather_data['soilmoisture1'] ;
 		@$weather_data_forward['PP1'] = $weather_data['pm25_ch1'] ;	
 		
