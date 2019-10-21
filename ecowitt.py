@@ -37,6 +37,8 @@
 # dewpoint=
 # extraTemp1=78.44
 # extraHumid1=74
+# extraTemp2=78.51
+# extraHumid2=75
 # soilTemp1=0
 # txBatteryStatus=
 # rainBatteryStatus=1.6
@@ -54,8 +56,9 @@
 #     poll_interval = 65                    # number of seconds, just a little more the GW1000 update time
 #     path = /var/log/ecowitt/weewx.txt     # location of data file
 #     driver = weewx.drivers.ecowitt
-#     mode = server
-#     address = localhost
+#     mode = normal                         # normal = use the ecowitt_http_gateway - server = without gateway, GW1000 configured to send data
+                                            # to address:port
+#     address = ip_address_of_weewx_server
 #     port = 9999
 #
 # The variables in the file have the same names from those in the database
@@ -86,7 +89,7 @@ import urlparse
 import weewx.drivers
 
 DRIVER_NAME = 'ecowitt'
-DRIVER_VERSION = "1.0"
+DRIVER_VERSION = "1.1"
 
 DEFAULT_ADDR = ''
 DEFAULT_PORT = 8000
@@ -303,14 +306,26 @@ class ecowittDriver(weewx.drivers.AbstractDevice):
                         pkt['dewpoint'] = float(v)
                     elif n == 'temp1f':
                         pkt['extraTemp1'] = float(v)
+                    elif n == 'temp2f':
+                        pkt['extraTemp2'] = float(v)
                     elif n == 'humidity1':
                         pkt['extraHumid1'] = float(v)
+                    elif n == 'humidity2':
+                        pkt['extraHumid2'] = float(v)
                     elif n == 'soilmoisture1':
                         pkt['soilTemp1'] = float(v)
                     elif n == 'wh80batt':
-                        pkt['txBatteryStatus'] = float(v)
+                        pkt['consBatteryVoltage'] = float(v)
+			if float(v) < 2.5:
+                        	pkt['windBatteryStatus'] = 1.0
+			if float(v) > 2.5:
+                        	pkt['windBatteryStatus'] = 0.0
                     elif n == 'wh40batt':
-                        pkt['rainBatteryStatus'] = float(v)
+	                pkt['supplyVoltage'] = float(v)
+			if float(v) < 1.0:
+                                pkt['rainBatteryStatus'] = 1.0
+			if float(v) > 1.0:
+                                pkt['rainBatteryStatus'] = 0.0
                     elif n == 'batt1':
                         pkt['outTempBatteryStatus'] = float(v)
                     else:
@@ -350,8 +365,12 @@ class ecowittDriver(weewx.drivers.AbstractDevice):
                        'dewpoint': pkt['dewpoint'],
                        'extraTemp1': pkt['extraTemp1'],
                        'extraHumid1': pkt['extraHumid1'],
+                       'extraTemp2': pkt['extraTemp2'],
+                       'extraHumid2': pkt['extraHumid2'],
                        'soilTemp1': pkt['soilTemp1'],
-                       'txBatteryStatus': pkt['txBatteryStatus'],
+                       'consBatteryVoltage': pkt['consBatteryVoltage'],
+	               'supplyVoltage': pkt['supplyVoltage'],
+                       'windBatteryStatus': pkt['windBatteryStatus'],
                        'rainBatteryStatus': pkt['rainBatteryStatus'],
                        'outTempBatteryStatus': pkt['outTempBatteryStatus']
                         }
