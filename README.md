@@ -108,6 +108,20 @@ the following changes to weewx.conf:<br>
 </b>
 </pre>
 
+In the weewx.conf or skinf.conf use the following Labels
+<pre>
+[Labels]
+                [[Generic]]
+                # Sensor status indicators
+                txBatteryStatus      = WH51-Soil
+                windBatteryStatus    = WS80-Temp/Wind
+                rainBatteryStatus    = WH40-Rain
+                outTempBatteryStatus = WH31_1-Temp/Hum
+                inTempBatteryStatus  = Inside Temperature
+                consBatteryVoltage   = WS80-Temp/Wind
+                heatingVoltage       = WH51-Soil
+                supplyVoltage        = WH40-Rain
+</pre>
 <b>NOTE</b><br>
 If you don't want to use the ecowitt_http_gateway, you can use the [Interceptor driver](https://github.com/matthewwall/weewx-interceptor) to sniff data of your GW1000.
 
