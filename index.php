@@ -167,6 +167,7 @@ $f_in_mm = 25.4;
 	@$weather_data['windBatteryStatus'] = 0.0 ;
     } 
     @$weather_data['consBatteryVoltage'] = $weather_data['wh80batt'] ;
+
     if ( $weather_data['wh40batt'] < 1.0 )
     {
         @$weather_data['rainBatteryStatus'] = 1.0 ;
@@ -176,6 +177,17 @@ $f_in_mm = 25.4;
         @$weather_data['rainBatteryStatus'] = 0.0 ;
     }
     @$weather_data['supplyVoltage'] = $weather_data['wh40batt'] ;
+
+    if ( $weather_data['soilbatt1'] < 1.0 )
+    {
+        @$weather_data['txBatteryStatus'] = 1.0 ;
+    }
+    if ( $weather_data['soilbatt1'] > 1.0 )
+    {
+        @$weather_data['txBatteryStatus'] = 0.0 ;
+    }
+    @$weather_data['heatingVoltage'] = $weather_data['soilbatt1'] ;
+
     @$weather_data['outTempBatteryStatus'] = $weather_data['batt1'] ;
 
 
@@ -386,8 +398,10 @@ if ( $txt_weewx == 1 )
     @$weather_data_weewx['outTempBatteryStatus'] = $weather_data['batt1'] ;
     @$weather_data_weewx['consBatteryVoltage'] = $weather_data['consBatteryVoltage'] ;
     @$weather_data_weewx['supplyVoltage'] = $weather_data['supplyVoltage'] ;
+    @$weather_data_weewx['heatingVoltage'] = $weather_data['heatingVoltage'] ;
+    @$weather_data_weewx['txBatteryStatus'] = $weather_data['txBatteryStatus'] ;
 
-    $stringa = "outTemp=" . @$weather_data_weewx['outTemp'] . "\nbarometer=" . @$weather_data_weewx['barometer'] . "\npressure=" . @$weather_data_weewx['pressure'] . "\noutHumidity=" . @$weather_data_weewx['outHumidity'] . "\nwindSpeed=" . @$weather_data_weewx['windSpeed'] . "\nwindDir=" . @$weather_data_weewx['windDir'] . "\nwindGust=" . @$weather_data_weewx['windGust'] . "\nrainRate=" . @$weather_data_weewx['rainRate'] . "\nrain_total=" . @$weather_data_weewx['rain_total'] . "\ninTemp=" . @$weather_data_weewx['inTemp'] . "\ninHumidity=" . @$weather_data_weewx['inHumidity'] . "\nradiation=" . @$weather_data_weewx['radiation'] . "\nUV=" . @$weather_data_weewx['UV'] . "\nwindchill=" . @$weather_data_weewx['windchill'] . "\ndewpoint=" . @$weather_data_weewx['dewpoint'] . "\nextraTemp1=" . @$weather_data_weewx['extraTemp1'] . "\nextraHumid1=" . @$weather_data_weewx['extraHumid1'] . "\nextraTemp2=" . @$weather_data_weewx['extraTemp2'] . "\nextraHumid2=" . @$weather_data_weewx['extraHumid2'] . "\nsoilTemp1=" . @$weather_data_weewx['soilTemp1'] . "\nwindBatteryStatus=" . @$weather_data_weewx['windBatteryStatus'] . "\nrainBatteryStatus=" . @$weather_data_weewx['rainBatteryStatus'] . "\noutTempBatteryStatus=" . @$weather_data_weewx['outTempBatteryStatus'] . "\nconsBatteryVoltage=" . @$weather_data_weewx['consBatteryVoltage'] . "\nsupplyVoltage=" . @$weather_data_weewx['supplyVoltage'] . "\n";
+    $stringa = "outTemp=" . @$weather_data_weewx['outTemp'] . "\nbarometer=" . @$weather_data_weewx['barometer'] . "\npressure=" . @$weather_data_weewx['pressure'] . "\noutHumidity=" . @$weather_data_weewx['outHumidity'] . "\nwindSpeed=" . @$weather_data_weewx['windSpeed'] . "\nwindDir=" . @$weather_data_weewx['windDir'] . "\nwindGust=" . @$weather_data_weewx['windGust'] . "\nrainRate=" . @$weather_data_weewx['rainRate'] . "\nrain_total=" . @$weather_data_weewx['rain_total'] . "\ninTemp=" . @$weather_data_weewx['inTemp'] . "\ninHumidity=" . @$weather_data_weewx['inHumidity'] . "\nradiation=" . @$weather_data_weewx['radiation'] . "\nUV=" . @$weather_data_weewx['UV'] . "\nwindchill=" . @$weather_data_weewx['windchill'] . "\ndewpoint=" . @$weather_data_weewx['dewpoint'] . "\nextraTemp1=" . @$weather_data_weewx['extraTemp1'] . "\nextraHumid1=" . @$weather_data_weewx['extraHumid1'] . "\nextraTemp2=" . @$weather_data_weewx['extraTemp2'] . "\nextraHumid2=" . @$weather_data_weewx['extraHumid2'] . "\nsoilTemp1=" . @$weather_data_weewx['soilTemp1'] . "\nwindBatteryStatus=" . @$weather_data_weewx['windBatteryStatus'] . "\nrainBatteryStatus=" . @$weather_data_weewx['rainBatteryStatus'] . "\noutTempBatteryStatus=" . @$weather_data_weewx['outTempBatteryStatus'] . "\nconsBatteryVoltage=" . @$weather_data_weewx['consBatteryVoltage'] . "\nsupplyVoltage=" . @$weather_data_weewx['supplyVoltage'] . "\ntxBatteryStatus=" . @$weather_data_weewx['txBatteryStatus'] . "\nheatingVoltage=" . @$weather_data_weewx['heatingVoltage'] . "\n";
 
 
     $txt_weewx_logfile = $txt_dir_weewx . "/weewx.txt";
