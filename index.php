@@ -128,6 +128,7 @@ $f_in_mm = 25.4;
     @$weather_data['tempc'] = round( ( $weather_data['tempf'] - 32 ) * 5 / 9, 2 );
     @$weather_data['temp1c'] = round( ( $weather_data['temp1f'] - 32 ) * 5 / 9, 2 );
     @$weather_data['temp2c'] = round( ( $weather_data['temp2f'] - 32 ) * 5 / 9, 2 );
+    @$weather_data['temp3c'] = round( ( $weather_data['temp3f'] - 32 ) * 5 / 9, 2 );
     @$weather_data['tempinc'] = round( ( $weather_data['tempinf'] - 32 ) * 5 / 9, 2 );
     @$weather_data['dewptc'] = round( ( $weather_data['dewptf'] - 32 ) * 5 / 9, 2 );
     
@@ -199,7 +200,7 @@ if ( $forward_data == 1 )
     @$weather_data_forward['PASS'] = $forward_server_password ;
     @$weather_data_forward['T'] = $weather_data['tempc'] ;
     @$weather_data_forward['H'] = $weather_data['humidity'] ;
-    @$weather_data_forward['P'] = $weather_data['baromabshpa'] ;
+    @$weather_data_forward['P'] = $weather_data['baromrelhpa'] ;
     @$weather_data_forward['W'] = $weather_data['windspeedkmh'] ;
     @$weather_data_forward['G'] = $weather_data['windgustkmh'] ;
     @$weather_data_forward['B'] = $weather_data['winddir'] ;
@@ -213,13 +214,15 @@ if ( $forward_data == 1 )
     @$weather_data_forward['H1'] = $weather_data['humidity1'] ;
     @$weather_data_forward['T2'] = $weather_data['temp2c'] ;
     @$weather_data_forward['H2'] = $weather_data['humidity2'] ;
+    @$weather_data_forward['T3'] = $weather_data['temp2c'] ;
+    @$weather_data_forward['H3'] = $weather_data['humidity2'] ;
     @$weather_data_forward['SM1'] = $weather_data['soilmoisture1'] ;
     @$weather_data_forward['PP1'] = $weather_data['pm25_ch1'] ;
 
 
     #@$weather_data['forward_url'] = "http://" . $forward_server . $_SERVER[REQUEST_URI];
     @$weather_data_forward['forward_url'] = "http://" . $forward_server ;
-    @$weather_data_forward['forward'] = file_get_contents($weather_data_forward['forward_url'] . "?" . "U=" . @$weather_data_forward['U'] . "&PASS=" . @$weather_data_forward['PASS'] . "&T=" . @$weather_data_forward['T'] . "&H=" . @$weather_data_forward['H'] ."&P=" . @$weather_data_forward['P'] . "&W=" . @$weather_data_forward['W'] . "&G=" . @$weather_data_forward['G'] . "&B=" . @$weather_data_forward['B'] . "&R=" . @$weather_data_forward['R'] . "&RR=" . @$weather_data_forward['RR'] . "&S=" . @$weather_data_forward['S'] . "&UV=" . @$weather_data_forward['UV'] . "&TIN=" . @$weather_data_forward['TIN'] . "&HIN=" . @$weather_data_forward['HIN'] . "&T1=" . @$weather_data_forward['T1'] . "&H1=" . @$weather_data_forward['H1'] . "&T2=" . @$weather_data_forward['T2'] . "&H2=" . @$weather_data_forward['H2'] . "&SM1=" . @$weather_data_forward['SM1'] . "&PP1=" . @$weather_data_forward['PP1'] );
+    @$weather_data_forward['forward'] = file_get_contents($weather_data_forward['forward_url'] . "?" . "U=" . @$weather_data_forward['U'] . "&PASS=" . @$weather_data_forward['PASS'] . "&T=" . @$weather_data_forward['T'] . "&H=" . @$weather_data_forward['H'] ."&P=" . @$weather_data_forward['P'] . "&W=" . @$weather_data_forward['W'] . "&G=" . @$weather_data_forward['G'] . "&B=" . @$weather_data_forward['B'] . "&R=" . @$weather_data_forward['R'] . "&RR=" . @$weather_data_forward['RR'] . "&S=" . @$weather_data_forward['S'] . "&UV=" . @$weather_data_forward['UV'] . "&TIN=" . @$weather_data_forward['TIN'] . "&HIN=" . @$weather_data_forward['HIN'] . "&T1=" . @$weather_data_forward['T1'] . "&H1=" . @$weather_data_forward['H1'] . "&T2=" . @$weather_data_forward['T2'] . "&H2=" . @$weather_data_forward['H2'] . "&T3=" . @$weather_data_forward['T3'] . "&H3=" . @$weather_data_forward['H3'] . "&SM1=" . @$weather_data_forward['SM1'] . "&PP1=" . @$weather_data_forward['PP1'] );
 }
 
 # Pack data into json format
@@ -325,7 +328,7 @@ if ( $txt_mnw == 1 )
     @$weather_data_mnw['Date'] = gmdate("d-m-y");
     @$weather_data_mnw['Time'] = gmdate("H:i");
     @$weather_data_mnw['TempOut'] = $weather_data['tempc'] ;
-    @$weather_data_mnw['Pres'] = $weather_data['baromabshpa'] ;
+    @$weather_data_mnw['Pres'] = $weather_data['baromrelhpa'] ;
     @$weather_data_mnw['HumOut'] = $weather_data['humidity'] ;
     @$weather_data_mnw['Wind'] = $weather_data['windspeedkmh'] ;
     @$weather_data_mnw['Dir'] = $weather_data['winddir'] ;
@@ -375,7 +378,7 @@ if ( $txt_weewx == 1 )
 {
     @$weather_data_weewx['outTemp'] = $weather_data['tempf'] ;
     @$weather_data_weewx['barometer'] = $weather_data['baromrelin'] ;
-    @$weather_data_weewx['pressure'] = $weather_data['baromabsin'] ;
+    @$weather_data_weewx['pressure'] = $weather_data['baromrelin'] ;
     @$weather_data_weewx['outHumidity'] = $weather_data['humidity'] ;
     @$weather_data_weewx['windSpeed'] = $weather_data['windspeedmph'] ;
     @$weather_data_weewx['windDir'] = $weather_data['winddir'] ;
@@ -392,6 +395,8 @@ if ( $txt_weewx == 1 )
     @$weather_data_weewx['extraHumid1'] = $weather_data['humidity1'] ;
     @$weather_data_weewx['extraTemp2'] = $weather_data['temp2f'] ;
     @$weather_data_weewx['extraHumid2'] = $weather_data['humidity2'] ;
+    @$weather_data_weewx['extraTemp3'] = $weather_data['temp3f'] ;
+    @$weather_data_weewx['extraHumid3'] = $weather_data['humidity3'] ;
     @$weather_data_weewx['soilTemp1'] = $weather_data['soilmoisture1'] ;
     @$weather_data_weewx['windBatteryStatus'] = $weather_data['windBatteryStatus'] ;
     @$weather_data_weewx['rainBatteryStatus'] = $weather_data['rainBatteryStatus'] ;
@@ -401,7 +406,7 @@ if ( $txt_weewx == 1 )
     @$weather_data_weewx['heatingVoltage'] = $weather_data['heatingVoltage'] ;
     @$weather_data_weewx['txBatteryStatus'] = $weather_data['txBatteryStatus'] ;
 
-    $stringa = "outTemp=" . @$weather_data_weewx['outTemp'] . "\nbarometer=" . @$weather_data_weewx['barometer'] . "\npressure=" . @$weather_data_weewx['pressure'] . "\noutHumidity=" . @$weather_data_weewx['outHumidity'] . "\nwindSpeed=" . @$weather_data_weewx['windSpeed'] . "\nwindDir=" . @$weather_data_weewx['windDir'] . "\nwindGust=" . @$weather_data_weewx['windGust'] . "\nrainRate=" . @$weather_data_weewx['rainRate'] . "\nrain_total=" . @$weather_data_weewx['rain_total'] . "\ninTemp=" . @$weather_data_weewx['inTemp'] . "\ninHumidity=" . @$weather_data_weewx['inHumidity'] . "\nradiation=" . @$weather_data_weewx['radiation'] . "\nUV=" . @$weather_data_weewx['UV'] . "\nwindchill=" . @$weather_data_weewx['windchill'] . "\ndewpoint=" . @$weather_data_weewx['dewpoint'] . "\nextraTemp1=" . @$weather_data_weewx['extraTemp1'] . "\nextraHumid1=" . @$weather_data_weewx['extraHumid1'] . "\nextraTemp2=" . @$weather_data_weewx['extraTemp2'] . "\nextraHumid2=" . @$weather_data_weewx['extraHumid2'] . "\nsoilTemp1=" . @$weather_data_weewx['soilTemp1'] . "\nwindBatteryStatus=" . @$weather_data_weewx['windBatteryStatus'] . "\nrainBatteryStatus=" . @$weather_data_weewx['rainBatteryStatus'] . "\noutTempBatteryStatus=" . @$weather_data_weewx['outTempBatteryStatus'] . "\nconsBatteryVoltage=" . @$weather_data_weewx['consBatteryVoltage'] . "\nsupplyVoltage=" . @$weather_data_weewx['supplyVoltage'] . "\ntxBatteryStatus=" . @$weather_data_weewx['txBatteryStatus'] . "\nheatingVoltage=" . @$weather_data_weewx['heatingVoltage'] . "\n";
+    $stringa = "outTemp=" . @$weather_data_weewx['outTemp'] . "\nbarometer=" . @$weather_data_weewx['barometer'] . "\npressure=" . @$weather_data_weewx['pressure'] . "\noutHumidity=" . @$weather_data_weewx['outHumidity'] . "\nwindSpeed=" . @$weather_data_weewx['windSpeed'] . "\nwindDir=" . @$weather_data_weewx['windDir'] . "\nwindGust=" . @$weather_data_weewx['windGust'] . "\nrainRate=" . @$weather_data_weewx['rainRate'] . "\nrain_total=" . @$weather_data_weewx['rain_total'] . "\ninTemp=" . @$weather_data_weewx['inTemp'] . "\ninHumidity=" . @$weather_data_weewx['inHumidity'] . "\nradiation=" . @$weather_data_weewx['radiation'] . "\nUV=" . @$weather_data_weewx['UV'] . "\nwindchill=" . @$weather_data_weewx['windchill'] . "\ndewpoint=" . @$weather_data_weewx['dewpoint'] . "\nextraTemp1=" . @$weather_data_weewx['extraTemp1'] . "\nextraHumid1=" . @$weather_data_weewx['extraHumid1'] . "\nextraTemp2=" . @$weather_data_weewx['extraTemp2'] . "\nextraHumid2=" . @$weather_data_weewx['extraHumid2'] . "\nextraTemp3=" . @$weather_data_weewx['extraTemp3'] . "\nextraHumid3=" . @$weather_data_weewx['extraHumid3'] . "\nsoilTemp1=" . @$weather_data_weewx['soilTemp1'] . "\nwindBatteryStatus=" . @$weather_data_weewx['windBatteryStatus'] . "\nrainBatteryStatus=" . @$weather_data_weewx['rainBatteryStatus'] . "\noutTempBatteryStatus=" . @$weather_data_weewx['outTempBatteryStatus'] . "\nconsBatteryVoltage=" . @$weather_data_weewx['consBatteryVoltage'] . "\nsupplyVoltage=" . @$weather_data_weewx['supplyVoltage'] . "\ntxBatteryStatus=" . @$weather_data_weewx['txBatteryStatus'] . "\nheatingVoltage=" . @$weather_data_weewx['heatingVoltage'] . "\n";
 
 
     $txt_weewx_logfile = $txt_dir_weewx . "/weewx.txt";
