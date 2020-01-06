@@ -24,7 +24,8 @@
 	#	    - Added support for soilmoisture and pm25 sensors
 	#   v1.3 - Oct 20, 2019
 	#	    - Solved error for second WH31
-	#
+	#   v1.4 - Jan 06, 2020
+	#	    - baromabsin is changed with baromrelin
 	############################################################################
 	
 
@@ -122,7 +123,7 @@
 		@$weather_data_forward['PASS'] = $forward_server_password ;
 		@$weather_data_forward['T'] = $weather_data['tempc'] ;
 		@$weather_data_forward['H'] = $weather_data['humidity'] ;
-		@$weather_data_forward['P'] = $weather_data['baromabshpa'] ;
+		@$weather_data_forward['P'] = $weather_data['baromrelhpa'] ;
 		@$weather_data_forward['W'] = $weather_data['windspeedkmh'] ;
 		@$weather_data_forward['G'] = $weather_data['windgustkmh'] ;
 		@$weather_data_forward['B'] = $weather_data['winddir'] ;
