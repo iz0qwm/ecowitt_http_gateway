@@ -143,6 +143,14 @@ If you don't want to use the ecowitt_http_gateway, you can use the [Interceptor 
 
 #
 #
+# ecowitt Meteotemplate blocks
+![Example of airquality block page](https://raw.githubusercontent.com/iz0qwm/ecowitt_http_gateway/master/ecowitt_block_ariquality1.png)
+![Example of airquality block page](https://raw.githubusercontent.com/iz0qwm/ecowitt_http_gateway/master/ecowitt_block_ariquality2.png)
+
+
+
+#
+#
 # NOTE from the issue forum
 
 Googling: https://fhem.de/
