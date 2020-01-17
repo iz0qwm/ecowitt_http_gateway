@@ -15,10 +15,12 @@ Features:
 * Forwards data to external meteotemplate server (if $forward_data = 1)
 * Converts data to other units (°C, km/h, KTS, mm) if $convert_data = 1
 * Stores data in json format to text file (if $json_data_log = 1)
+* Stores data in txt format to text file for weewx driver (if $txt_weewx = 1)
 * Stores data in txt format to text file (if $txt_data_log = 1)
 * Stores data to dummy device in FHEM server (if $fhem_data_log = 1)
 * Prepare export file for Meteonetwork (if $txt_mnw = 1)
 * If $device = "auto", device name is extracted from weather station data stream 'PASSKEY' - supports multiple WS
+* temperature correction method based on Energy balance - http://www.kwos.it/joomla/weather-monitoring/articoli/139-ecowitt-ws80-correzione-della-temperatura-rilevata
 
 
 Usage:
@@ -73,6 +75,7 @@ $fhem_data_log = 0; 	# Activate the forward to FHEM server
 $forward_data = 1; 	# Activate the forward to Meteotemplate web site
 $txt_mnw = 0; 		# Activate the FTP for the Meteonetwork string
 $txt_weewx = 1;         # Activate the export to .txt for weewx driver
+$ws80_temperature_correction = 0; # Activate the temperature correction method based on Energy balance only for WS80
 
 # Settings: FHEM
 $FHEM_server = "127.0.0.1";
@@ -84,7 +87,7 @@ $txt_data_logdir = "/var/log/ecowitt";
 
 # Settings: Forward to meteotemplate server
 $forward_server = "www.kwos.org/poggiocorese_ecowitt/api.php";
-$forward_server_password = "*******";
+$forward_server_password = "richany12";
 
 # Setting for Meteonetwork export file
 $station_mnw = "mcr063";  		# This is the name of the station received by Meteonetwork registration
@@ -135,6 +138,7 @@ $f_in_mm = 25.4;
     # Speeds
     @$weather_data['windgustkmh'] = round( $weather_data['windgustmph'] * $f_mph_kmh, 2 );
     @$weather_data['windspeedkmh'] = round( $weather_data['windspeedmph'] * $f_mph_kmh, 2 );
+	@$weather_data['windspeedms'] = round( $weather_data['windspeedmph'] * $f_mph_ms, 2 ); 	
     
     # Calculated
     @$weather_data['windchillc'] = round((13.12 + 0.6215 * @$weather_data['tempc'] - 11.37 * pow(@$weather_data['windspeedkmh'],0.16) + 0.3965 * @$weather_data['tempc'] * pow(@$weather_data['windspeedkmh'],0.16)), 1);
@@ -192,6 +196,147 @@ $f_in_mm = 25.4;
     @$weather_data['outTempBatteryStatus'] = $weather_data['batt1'] ;
 
 
+# WS80 temperature correction
+if ( $ws80_temperature_correction == 1 ) {
+	# reading old data from files
+	#
+	# one value ago solar radiation
+	# read old solar rad from file
+	$read_S_1 = $txt_dir_weewx . "/last-1_solar_ws80.txt";
+	if (!file_exists($read_S_1)) {	
+		$result_S_1 = round($weather_data['solarradiation'], 2);
+	} else { 
+		$file = fopen($read_S_1, 'r');
+		#while (!feof($file)){ 
+			$result_S_1 = fgets($file);
+			$result_S_1 = round((double)$result_S_1, 2);
+		#}
+		fclose($file);
+	}
+	# two values ago solar radiation
+	$read_S_2 = $txt_dir_weewx . "/last-2_solar_ws80.txt";
+	if (!file_exists($read_S_2)) {	
+		$result_S_2 = round($weather_data['solarradiation'], 2);
+	} else { 	
+		$file = fopen($read_S_2, 'r');
+		#while (!feof($file)){ 
+			$result_S_2 = fgets($file);
+			$result_S_2 = round((double)$result_S_2, 2);
+		#}
+		fclose($file);
+	}		
+	# one value ago temperature
+	$read_T_1 = $txt_dir_weewx . "/last-1_temperature.txt";
+	if (!file_exists($read_S_2)) {	
+		$result_T_1 = round($weather_data['tempc'], 2);
+	}  else { 		
+		$file = fopen($read_T_1, 'r');
+		#while (!feof($file)){ 
+			$result_T_1 = fgets($file);
+			$result_T_1 = round((double)$result_T_1, 2);
+		#}
+		fclose($file);
+	}	
+	
+
+	#
+	# Fixed constants
+	#
+	$dm = 0.0009;
+	$K = 0.0984;
+	$cp = 29.3;
+	$aslow = 0.270;
+	$asnormal = 0.325;
+	$ashigh = 0.385;
+	$asultrahigh = 0.452;
+	# Wind cannot be 0
+	if ( $weather_data['windspeedms'] < 0.2 )
+    {
+        $u = 0.2 ;
+    } else {
+		$u = $weather_data['windspeedms'];
+	}
+	#
+	# as parameter estimation
+	#
+	if ( round($weather_data['solarradiation'], 2) < 1 )
+	{
+		$S = 0.1;
+	} elseif ( round($weather_data['solarradiation'], 2) > 352.3 ) {
+		$S = 352.3;
+	} else {
+		$S = round($weather_data['solarradiation'], 2);
+	}	
+	
+	if ( $S < $result_S_1 ) {
+		if ( $result_S_1 < $result_S_2 ) {
+			$as = $ashigh;
+		} else {
+			$as = $aslow;
+		}	
+	} else {
+		if ( $S < $result_S_2 ) {
+			$as = $aslow;
+		} else {
+			$as = $asnormal;
+		}
+	}
+	
+	if ( ( $as == $ashigh ) || ( $as == $low ) ) {
+		$diff_temp = round($weather_data['tempc'], 2) - round($result_T_1, 2);
+		if ( $diff_temp > 0.3 ) {
+			$as = $asultrahigh;
+		}
+	}
+	
+	# Formula sections
+	$sez1 = $as * $S;
+	$sez2 = $u / $dm;
+	$sez3 = sqrt($sez2);
+	$sez4 = $cp * $K * $sez3;
+	$sez5 = $sez1 / $sez4;
+	$temp_corr = round($weather_data['tempc'], 2) - $sez5;
+	
+	# Original value of temperature from WS80
+	@$weather_data['tempc_orig'] = round($weather_data['tempc'], 2);
+	# Corrected calue of temperature from WS80
+	@$weather_data['tempc'] = round($temp_corr, 2);
+	
+	
+	#
+	# Writing to files last values
+	#
+
+	$write_S_1 = $txt_dir_weewx . "/last-1_solar_ws80.txt";
+    $file = fopen($write_S_1, 'w');
+	$stringa = round($weather_data['solarradiation'], 2) . "\n";
+    fwrite($file, $stringa);
+    fclose($file);
+	
+	# read old solar rad from file
+	$read_S_1 = $txt_dir_weewx . "/last-1_solar_ws80.txt";
+	$file = fopen($read_S_1, 'r');
+	#while (!feof($file)){ 
+		$get_read_S_1 = fgets($file);
+		$get_read_S_1 = round((double)$get_read_S_1, 2);
+	#}
+    fclose($file);
+	
+	# write old solar to new file
+	$write_S_2 = $txt_dir_weewx . "/last-2_solar_ws80.txt";
+    $file = fopen($write_S_2, 'w');
+	$stringa =  round((double)$get_read_S_1, 2) . "\n";
+    fwrite($file, $stringa);
+    fclose($file);
+	
+	# write temp to file
+	$write_T_1 = $txt_dir_weewx . "/last-1_temperature.txt";
+    $file = fopen($write_T_1, 'w');
+	$stringa = round($weather_data['tempc_orig'], 2) . "\n";
+    fwrite($file, $stringa);
+    fclose($file);
+	
+}	
 
 # Forward data to meteotemplate server
 if ( $forward_data == 1 ) 
@@ -217,12 +362,15 @@ if ( $forward_data == 1 )
     @$weather_data_forward['T3'] = $weather_data['temp2c'] ;
     @$weather_data_forward['H3'] = $weather_data['humidity2'] ;
     @$weather_data_forward['SM1'] = $weather_data['soilmoisture1'] ;
+    @$weather_data_forward['SM2'] = $weather_data['soilmoisture2'] ;	
     @$weather_data_forward['PP1'] = $weather_data['pm25_ch1'] ;
-
+    @$weather_data_forward['L'] = $weather_data['lightning_num'] ;
+    @$weather_data_forward['LD'] = $weather_data['lightning'] ;
+    @$weather_data_forward['LT'] = $weather_data['lightning_time'] ;
 
     #@$weather_data['forward_url'] = "http://" . $forward_server . $_SERVER[REQUEST_URI];
     @$weather_data_forward['forward_url'] = "http://" . $forward_server ;
-    @$weather_data_forward['forward'] = file_get_contents($weather_data_forward['forward_url'] . "?" . "U=" . @$weather_data_forward['U'] . "&PASS=" . @$weather_data_forward['PASS'] . "&T=" . @$weather_data_forward['T'] . "&H=" . @$weather_data_forward['H'] ."&P=" . @$weather_data_forward['P'] . "&W=" . @$weather_data_forward['W'] . "&G=" . @$weather_data_forward['G'] . "&B=" . @$weather_data_forward['B'] . "&R=" . @$weather_data_forward['R'] . "&RR=" . @$weather_data_forward['RR'] . "&S=" . @$weather_data_forward['S'] . "&UV=" . @$weather_data_forward['UV'] . "&TIN=" . @$weather_data_forward['TIN'] . "&HIN=" . @$weather_data_forward['HIN'] . "&T1=" . @$weather_data_forward['T1'] . "&H1=" . @$weather_data_forward['H1'] . "&T2=" . @$weather_data_forward['T2'] . "&H2=" . @$weather_data_forward['H2'] . "&T3=" . @$weather_data_forward['T3'] . "&H3=" . @$weather_data_forward['H3'] . "&SM1=" . @$weather_data_forward['SM1'] . "&PP1=" . @$weather_data_forward['PP1'] );
+    @$weather_data_forward['forward'] = file_get_contents($weather_data_forward['forward_url'] . "?" . "U=" . @$weather_data_forward['U'] . "&PASS=" . @$weather_data_forward['PASS'] . "&T=" . @$weather_data_forward['T'] . "&H=" . @$weather_data_forward['H'] ."&P=" . @$weather_data_forward['P'] . "&W=" . @$weather_data_forward['W'] . "&G=" . @$weather_data_forward['G'] . "&B=" . @$weather_data_forward['B'] . "&R=" . @$weather_data_forward['R'] . "&RR=" . @$weather_data_forward['RR'] . "&S=" . @$weather_data_forward['S'] . "&UV=" . @$weather_data_forward['UV'] . "&TIN=" . @$weather_data_forward['TIN'] . "&HIN=" . @$weather_data_forward['HIN'] . "&T1=" . @$weather_data_forward['T1'] . "&H1=" . @$weather_data_forward['H1'] . "&T2=" . @$weather_data_forward['T2'] . "&H2=" . @$weather_data_forward['H2'] . "&T3=" . @$weather_data_forward['T3'] . "&H3=" . @$weather_data_forward['H3'] . "&SM1=" . @$weather_data_forward['SM1'] . "&SM2=" . @$weather_data_forward['SM2'] . "&L=" . @$weather_data_forward['L'] . "&LD=" . @$weather_data_forward['LD'] . "&LT=" . @$weather_data_forward['LT'] . "&PP1=" . @$weather_data_forward['PP1'] );
 }
 
 # Pack data into json format
