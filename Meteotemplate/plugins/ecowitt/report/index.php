@@ -139,10 +139,10 @@
 		$dm = 0.0009;
 		$K = 0.0984;
 		$cp = 29.3;
-		$aslow = 0.270;
+		$aslow = 0.300;
 		$asnormal = 0.325;
-		$ashigh = 0.385;
-		$asultrahigh = 0.452;
+		$ashigh = 0.335;
+		$asultrahigh = 0.345;
 		# Wind cannot be 0
 		if ( $weather_data['windspeedms'] < 0.2 )
 		{
