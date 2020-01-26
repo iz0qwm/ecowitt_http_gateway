@@ -24,10 +24,10 @@
 		$forward_server_password = "meteotemplate admin password";
 	}
 	if(!isset($txt_data_log)){
-		$txt_data_log = "0";
+		$txt_data_log = false;
 	}
 	if(!isset($ws80_temperature_correction)){
-		$ws80_temperature_correction = "0";
+		$ws80_temperature_correction = false;
 	}	
 	
 	
@@ -92,18 +92,10 @@
 							Record data in CSV format
 						</td>
 						<td style="text-align:left">
-							<?php
-									if( $txt_data_log == "0" ){ 
-							?>
-										<input type="checkbox" class="largerCheckbox" name="txt_data_log" class="button2" value="0">
-							<?php	}							
-									if( $txt_data_log == "1" ){
-							?>
-										<input type="checkbox" class="largerCheckbox" name="txt_data_log" class="button2" value="1" checked>
-							<?php		}
-							?>							
-
-							<!-- <input name="txt_data_log" class="button2" value="<?php echo $txt_data_log?>"> -->
+							<select name="txt_data_log" class="button2">
+								<option value="true" <?php if($txt_data_log){echo "selected";}?>>Yes</option>
+								<option value="false" <?php if(!$txt_data_log){echo "selected";}?>>No</option>
+							</select>						
 						</td>
 					</tr>
 					<tr>
@@ -112,19 +104,12 @@
 							The Solar Radiation, Wind Speed and Temp must be enabled to store data on database (normally is default)
 						</td>
 						<td style="text-align:left">
-							<?php
-									if( $ws80_temperature_correction == "0" ){ 
-							?>
-										<input type="checkbox" class="largerCheckbox" name="ws80_temperature_correction" class="button2" value="0">
-							<?php	}							
-									if( $ws80_temperature_correction == "1" ){
-							?>
-										<input type="checkbox" class="largerCheckbox" name="ws80_temperature_correction" class="button2" value="1" checked>
-							<?php		}
-							?>							
+							<select name="ws80_temperature_correction" class="button2">
+								<option value="true" <?php if($ws80_temperature_correction){echo "selected";}?>>Yes</option>
+								<option value="false" <?php if(!$ws80_temperature_correction){echo "selected";}?>>No</option>
+							</select>						
+						</td>						
 
-							<!-- <input name="ws80_temperature_correction" class="button2" value="<?php echo $ws80_temperature_correction?>"> -->
-						</td>
 					</tr>					
 					<tr>
 						<td style="text-align:left;width:500px" colspan="2">
