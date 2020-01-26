@@ -29,6 +29,8 @@
 	#   v1.5 - Jan 15, 2020
 	#	    - first version of temperature correction method based on Energy balance 
 	#       - http://www.kwos.it/joomla/weather-monitoring/articoli/139-ecowitt-ws80-correzione-della-temperatura-rilevata
+	#   v1.6 - Jan 26, 2020
+	#	    - modification to the formula of temperature correction method based on Energy balance 
 	############################################################################
 	
 
@@ -120,7 +122,7 @@
     # Date and time
     $weather_data['dateutc'] = gmdate("Y-m-d\TH:i:s\Z");
 	
-	if ( $ws80_temperature_correction == 1 )
+	if ($ws80_temperature_correction)
 	{
 		# reading old data from database
 		#
@@ -182,6 +184,11 @@
 				$as = $asultrahigh;
 			}
 		}
+
+		if ( round($weather_data['solarradiation'], 2) < 145 ) {
+			$as = $asultrahigh*2.5; 
+		}		
+		
 		
 		# Formula sections
 		$sez1 = $as * $S;
@@ -193,6 +200,16 @@
 		
 		# Original value of temperature from WS80
 		@$weather_data['tempc_orig'] = $weather_data['tempc'];
+		
+		# Corrected value of temperature from WS80
+		$diff_corr_temp = round($result_T_1, 2) - round($temp_corr, 2);
+		if ( $diff_corr_temp > 0.7 ) {
+			$temp_corr = $temp_corr+0.5;	
+		}
+		if ( $diff_corr_temp < -0.7 ) {
+			$temp_corr = $temp_corr-0.5;	
+		}
+	
 		# Corrected calue of temperature from WS80
 		@$weather_data['tempc'] = round( $temp_corr, 2 );
 		
@@ -246,7 +263,7 @@
 
 	# Write stream to csvfile
 	$txt_data_logfile = $txt_data_logdir . "/" . $device . "_" . $date_txt . ".csv";
-	if ( $txt_data_log == 1 )
+	if ($txt_data_log)
 	{
 		if (!file_exists($txt_data_logfile)) {
 			$data = json_decode($weather_data_json);
