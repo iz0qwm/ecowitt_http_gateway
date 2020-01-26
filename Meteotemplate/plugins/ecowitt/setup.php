@@ -127,7 +127,7 @@
 					</tr>
 					<tr>
 						<td style="text-align:left;width:500px" colspan="2">
-							CSV data will be saved to: <b><?php echo $baseURL?>plugins/ecowitt/report/</b>
+							CSV data will be saved to: <b><?php echo $baseURL?>plugins/ecowitt/</b>
 							<br><br>
 						</td>
 					</tr>						
