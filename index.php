@@ -87,7 +87,7 @@ $txt_data_logdir = "/var/log/ecowitt";
 
 # Settings: Forward to meteotemplate server
 $forward_server = "www.kwos.org/poggiocorese_ecowitt/api.php";
-$forward_server_password = "richany12";
+$forward_server_password = "*********";
 
 # Setting for Meteonetwork export file
 $station_mnw = "mcr063";  		# This is the name of the station received by Meteonetwork registration
@@ -225,7 +225,7 @@ if ( $ws80_temperature_correction == 1 ) {
 		#}
 		fclose($file);
 	}		
-	# one value ago temperature
+	# one value ago temperature not corrected
 	$read_T_1 = $txt_dir_weewx . "/last-1_temperature.txt";
 	if (!file_exists($read_S_2)) {	
 		$result_T_1 = round($weather_data['tempc'], 2);
@@ -237,6 +237,19 @@ if ( $ws80_temperature_correction == 1 ) {
 		#}
 		fclose($file);
 	}	
+	# one value ago temperature corrected
+	$read_corr_T_1 = $txt_dir_weewx . "/last-1_corr_temperature.txt";
+	if (!file_exists($read_corr_T_2)) {
+			$result_corr_T_1 = round($weather_data['tempc'], 2);
+	}  else {
+			$file = fopen($read_corr_T_1, 'r');
+			#while (!feof($file)){
+					$result_corr_T_1 = fgets($file);
+					$result_corr_T_1 = round((double)$result_corr_T_1, 2);
+			#}
+			fclose($file);
+	}
+
 	
 
 	#
@@ -291,6 +304,9 @@ if ( $ws80_temperature_correction == 1 ) {
 			$as = $asultrahigh;
 		}
 	}
+	if ( round($weather_data['solarradiation'], 2) < 145 ) {
+		$as = $asultrahigh*2.5; 
+	}
 	
 	# Formula sections
 	$sez1 = $as * $S;
@@ -302,7 +318,16 @@ if ( $ws80_temperature_correction == 1 ) {
 	
 	# Original value of temperature from WS80
 	@$weather_data['tempc_orig'] = round($weather_data['tempc'], 2);
-	# Corrected calue of temperature from WS80
+
+
+	# Corrected value of temperature from WS80
+	$diff_corr_temp = round($result_corr_T_1, 2) - round($temp_corr, 2);
+	if ( $diff_corr_temp > 0.7 ) {
+		$temp_corr = $temp_corr+0.5;	
+	}
+	if ( $diff_corr_temp < -0.7 ) {
+		$temp_corr = $temp_corr-0.5;	
+	}
 	@$weather_data['tempc'] = round($temp_corr, 2);
 	
 	
@@ -332,12 +357,20 @@ if ( $ws80_temperature_correction == 1 ) {
     fwrite($file, $stringa);
     fclose($file);
 	
-	# write temp to file
+	# write temp not corrected to file
 	$write_T_1 = $txt_dir_weewx . "/last-1_temperature.txt";
     $file = fopen($write_T_1, 'w');
 	$stringa = round($weather_data['tempc_orig'], 2) . "\n";
     fwrite($file, $stringa);
     fclose($file);
+
+	# write temp corrected to file
+	$write_corr_T_1 = $txt_dir_weewx . "/last-1_corr_temperature.txt";
+    $file = fopen($write_corr_T_1, 'w');
+        $stringa = round($weather_data['tempc'], 2) . "\n";
+    fwrite($file, $stringa);
+    fclose($file);
+
 	
 }	
 
