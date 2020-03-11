@@ -1,4 +1,4 @@
-If your Meteotemplate web is hosted on Altervista, you need to change the /report/index.php file with this one, due to restrinction on
+If your Meteotemplate web is hosted on Altervista, you need to change the /report/index.php file with this one, due to restrictions on
 file_get_contents on Altervista.
 
 You also need to remove the whitelist restrictions:
