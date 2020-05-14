@@ -31,6 +31,8 @@
 	#       - http://www.kwos.it/joomla/weather-monitoring/articoli/139-ecowitt-ws80-correzione-della-temperatura-rilevata
 	#   v1.6 - Jan 26, 2020
 	#	    - modification to the formula of temperature correction method based on Energy balance 
+	#	v2.0 - May 11, 2020
+	#	    - Battery status for sensors
 	############################################################################
 	
 
@@ -219,6 +221,8 @@
 	# Forward data to meteotemplate server
 	if ( $forward_data == 1 ) 
 	{
+		
+		
 		@$weather_data_forward['U'] = strtotime( $weather_data['dateutc'] );
 		@$weather_data_forward['PASS'] = $forward_server_password ;
 		@$weather_data_forward['T'] = $weather_data['tempc'] ;
@@ -243,10 +247,32 @@
 		@$weather_data_forward['L'] = $weather_data['lightning_num'] ;
 		@$weather_data_forward['LD'] = $weather_data['lightning'] ;
 		@$weather_data_forward['LT'] = $weather_data['lightning_time'] ;
+		@$weather_data_forward['WBAT'] = $weather_data['wh80batt'] ;
+		@$weather_data_forward['RBAT'] = $weather_data['wh40batt'] ;
+		@$weather_data_forward['LBAT'] = $weather_data['wh57batt'] ;
+		@$weather_data_forward['SM1BAT'] = $weather_data['soilbatt1'] ;
+		@$weather_data_forward['SM2BAT'] = $weather_data['soilbatt2'] ;
+		@$weather_data_forward['PP1BAT'] = $weather_data['pm25batt1'] ;
+		if ( $weather_data['batt1'] == 0 )
+		{
+			@$weather_data_forward['T1BAT'] = OK ;
+		}
+		if ( $weather_data['batt1'] == 1 )
+		{
+			@$weather_data_forward['T1BAT'] = LOW ;
+		}
+		if ( $weather_data['batt2'] == 0 )
+		{
+			@$weather_data_forward['T2BAT'] = OK ;
+		}
+		if ( $weather_data['batt2'] == 1 )
+		{
+			@$weather_data_forward['T2BAT'] = LOW ;
+		}
 		
 		#@$weather_data['forward_url'] = "http://" . $forward_server . $_SERVER[REQUEST_URI];
 		@$weather_data_forward['forward_url'] = "http://" . $forward_server ;
-		@$weather_data_forward['forward'] = file_get_contents($weather_data_forward['forward_url'] . "?" . "U=" . @$weather_data_forward['U'] . "&PASS=" . @$weather_data_forward['PASS'] . "&T=" . @$weather_data_forward['T'] . "&H=" . @$weather_data_forward['H'] ."&P=" . @$weather_data_forward['P'] . "&W=" . @$weather_data_forward['W'] . "&G=" . @$weather_data_forward['G'] . "&B=" . @$weather_data_forward['B'] . "&R=" . @$weather_data_forward['R'] . "&RR=" . @$weather_data_forward['RR'] . "&S=" . @$weather_data_forward['S'] . "&UV=" . @$weather_data_forward['UV'] . "&TIN=" . @$weather_data_forward['TIN'] . "&HIN=" . @$weather_data_forward['HIN'] . "&T1=" . @$weather_data_forward['T1'] . "&H1=" . @$weather_data_forward['H1'] . "&T2=" . @$weather_data_forward['T2'] . "&H2=" . @$weather_data_forward['H2'] .  "&SM1=" . @$weather_data_forward['SM1'] . "&SM2=" . @$weather_data_forward['SM2'] . "&L=" . @$weather_data_forward['L'] . "&LD=" . @$weather_data_forward['LD'] . "&LT=" . @$weather_data_forward['LT'] . "&PP1=" . @$weather_data_forward['PP1'] );
+		@$weather_data_forward['forward'] = file_get_contents($weather_data_forward['forward_url'] . "?" . "U=" . @$weather_data_forward['U'] . "&PASS=" . @$weather_data_forward['PASS'] . "&T=" . @$weather_data_forward['T'] . "&H=" . @$weather_data_forward['H'] ."&P=" . @$weather_data_forward['P'] . "&W=" . @$weather_data_forward['W'] . "&G=" . @$weather_data_forward['G'] . "&B=" . @$weather_data_forward['B'] . "&R=" . @$weather_data_forward['R'] . "&RR=" . @$weather_data_forward['RR'] . "&S=" . @$weather_data_forward['S'] . "&UV=" . @$weather_data_forward['UV'] . "&TIN=" . @$weather_data_forward['TIN'] . "&HIN=" . @$weather_data_forward['HIN'] . "&T1=" . @$weather_data_forward['T1'] . "&H1=" . @$weather_data_forward['H1'] . "&T2=" . @$weather_data_forward['T2'] . "&H2=" . @$weather_data_forward['H2'] .  "&SM1=" . @$weather_data_forward['SM1'] . "&SM2=" . @$weather_data_forward['SM2'] . "&L=" . @$weather_data_forward['L'] . "&LD=" . @$weather_data_forward['LD'] . "&LT=" . @$weather_data_forward['LT'] . "&PP1=" . @$weather_data_forward['PP1'] . "&WBAT=" . @$weather_data_forward['WBAT'] . "&RBAT=" . @$weather_data_forward['RBAT'] . "&LBAT=" . @$weather_data_forward['LBAT'] . "&PP1BAT=" . @$weather_data_forward['PP1BAT'] . "&SM1BAT=" . @$weather_data_forward['SM1BAT'] . "&SM2BAT=" . @$weather_data_forward['SM2BAT'] . "&T1BAT=" . @$weather_data_forward['T1BAT'] . "&T2BAT=" . @$weather_data_forward['T2BAT']);
 	}
 	
 	# Pack data into json format
