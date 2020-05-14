@@ -87,7 +87,7 @@ $txt_data_logdir = "/var/log/ecowitt";
 
 # Settings: Forward to meteotemplate server
 $forward_server = "www.kwos.org/poggiocorese_ecowitt/api.php";
-$forward_server_password = "*********";
+$forward_server_password = "richany12";
 
 # Setting for Meteonetwork export file
 $station_mnw = "mcr063";  		# This is the name of the station received by Meteonetwork registration
@@ -237,18 +237,18 @@ if ( $ws80_temperature_correction == 1 ) {
 		#}
 		fclose($file);
 	}	
-	# one value ago temperature corrected
-	$read_corr_T_1 = $txt_dir_weewx . "/last-1_corr_temperature.txt";
-	if (!file_exists($read_corr_T_2)) {
-			$result_corr_T_1 = round($weather_data['tempc'], 2);
-	}  else {
-			$file = fopen($read_corr_T_1, 'r');
-			#while (!feof($file)){
-					$result_corr_T_1 = fgets($file);
-					$result_corr_T_1 = round((double)$result_corr_T_1, 2);
-			#}
-			fclose($file);
-	}
+        # one value ago temperature corrected
+        $read_corr_T_1 = $txt_dir_weewx . "/last-1_corr_temperature.txt";
+        if (!file_exists($read_corr_T_2)) {
+                $result_corr_T_1 = round($weather_data['tempc'], 2);
+        }  else {
+                $file = fopen($read_corr_T_1, 'r');
+                #while (!feof($file)){
+                        $result_corr_T_1 = fgets($file);
+                        $result_corr_T_1 = round((double)$result_corr_T_1, 2);
+                #}
+                fclose($file);
+        }
 
 	
 
@@ -364,8 +364,8 @@ if ( $ws80_temperature_correction == 1 ) {
     fwrite($file, $stringa);
     fclose($file);
 
-	# write temp corrected to file
-	$write_corr_T_1 = $txt_dir_weewx . "/last-1_corr_temperature.txt";
+        # write temp corrected to file
+        $write_corr_T_1 = $txt_dir_weewx . "/last-1_corr_temperature.txt";
     $file = fopen($write_corr_T_1, 'w');
         $stringa = round($weather_data['tempc'], 2) . "\n";
     fwrite($file, $stringa);
@@ -403,10 +403,32 @@ if ( $forward_data == 1 )
     @$weather_data_forward['L'] = $weather_data['lightning_num'] ;
     @$weather_data_forward['LD'] = $weather_data['lightning'] ;
     @$weather_data_forward['LT'] = $weather_data['lightning_time'] ;
+	@$weather_data_forward['WBAT'] = $weather_data['wh80batt'] ;
+	@$weather_data_forward['RBAT'] = $weather_data['wh40batt'] ;
+	@$weather_data_forward['LBAT'] = $weather_data['wh57batt'] ;
+	@$weather_data_forward['SM1BAT'] = $weather_data['soilbatt1'] ;
+	@$weather_data_forward['SM2BAT'] = $weather_data['soilbatt2'] ;
+	@$weather_data_forward['PP1BAT'] = $weather_data['pm25batt1'] ;
+	if ( $weather_data['batt1'] == 0 )
+	{
+		@$weather_data_forward['T1BAT'] = OK ;
+	}
+	if ( $weather_data['batt1'] == 1 )
+	{
+		@$weather_data_forward['T1BAT'] = LOW ;
+	}
+	if ( $weather_data['batt2'] == 0 )
+	{
+		@$weather_data_forward['T2BAT'] = OK ;
+	}
+	if ( $weather_data['batt2'] == 1 )
+	{
+		@$weather_data_forward['T2BAT'] = LOW ;
+	}	
 
     #@$weather_data['forward_url'] = "http://" . $forward_server . $_SERVER[REQUEST_URI];
     @$weather_data_forward['forward_url'] = "http://" . $forward_server ;
-    @$weather_data_forward['forward'] = file_get_contents($weather_data_forward['forward_url'] . "?" . "U=" . @$weather_data_forward['U'] . "&PASS=" . @$weather_data_forward['PASS'] . "&T=" . @$weather_data_forward['T'] . "&H=" . @$weather_data_forward['H'] ."&P=" . @$weather_data_forward['P'] . "&W=" . @$weather_data_forward['W'] . "&G=" . @$weather_data_forward['G'] . "&B=" . @$weather_data_forward['B'] . "&R=" . @$weather_data_forward['R'] . "&RR=" . @$weather_data_forward['RR'] . "&S=" . @$weather_data_forward['S'] . "&UV=" . @$weather_data_forward['UV'] . "&TIN=" . @$weather_data_forward['TIN'] . "&HIN=" . @$weather_data_forward['HIN'] . "&T1=" . @$weather_data_forward['T1'] . "&H1=" . @$weather_data_forward['H1'] . "&T2=" . @$weather_data_forward['T2'] . "&H2=" . @$weather_data_forward['H2'] . "&T3=" . @$weather_data_forward['T3'] . "&H3=" . @$weather_data_forward['H3'] . "&SM1=" . @$weather_data_forward['SM1'] . "&SM2=" . @$weather_data_forward['SM2'] . "&L=" . @$weather_data_forward['L'] . "&LD=" . @$weather_data_forward['LD'] . "&LT=" . @$weather_data_forward['LT'] . "&PP1=" . @$weather_data_forward['PP1'] );
+    @$weather_data_forward['forward'] = file_get_contents($weather_data_forward['forward_url'] . "?" . "U=" . @$weather_data_forward['U'] . "&PASS=" . @$weather_data_forward['PASS'] . "&T=" . @$weather_data_forward['T'] . "&H=" . @$weather_data_forward['H'] ."&P=" . @$weather_data_forward['P'] . "&W=" . @$weather_data_forward['W'] . "&G=" . @$weather_data_forward['G'] . "&B=" . @$weather_data_forward['B'] . "&R=" . @$weather_data_forward['R'] . "&RR=" . @$weather_data_forward['RR'] . "&S=" . @$weather_data_forward['S'] . "&UV=" . @$weather_data_forward['UV'] . "&TIN=" . @$weather_data_forward['TIN'] . "&HIN=" . @$weather_data_forward['HIN'] . "&T1=" . @$weather_data_forward['T1'] . "&H1=" . @$weather_data_forward['H1'] . "&T2=" . @$weather_data_forward['T2'] . "&H2=" . @$weather_data_forward['H2'] . "&T3=" . @$weather_data_forward['T3'] . "&H3=" . @$weather_data_forward['H3'] . "&SM1=" . @$weather_data_forward['SM1'] . "&SM2=" . @$weather_data_forward['SM2'] . "&L=" . @$weather_data_forward['L'] . "&LD=" . @$weather_data_forward['LD'] . "&LT=" . @$weather_data_forward['LT'] . "&PP1=" . @$weather_data_forward['PP1'] . "&WBAT=" . @$weather_data_forward['WBAT'] . "&RBAT=" . @$weather_data_forward['RBAT'] . "&LBAT=" . @$weather_data_forward['LBAT'] . "&PP1BAT=" . @$weather_data_forward['PP1BAT'] . "&SM1BAT=" . @$weather_data_forward['SM1BAT'] . "&SM2BAT=" . @$weather_data_forward['SM2BAT'] . "&T1BAT=" . @$weather_data_forward['T1BAT'] . "&T2BAT=" . @$weather_data_forward['T2BAT']);
 }
 
 # Pack data into json format
