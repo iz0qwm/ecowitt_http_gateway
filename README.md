@@ -144,6 +144,7 @@ If you don't want to use the ecowitt_http_gateway, you can use the [Interceptor 
 #
 #
 # ecowitt Meteotemplate blocks
+<b> Remember to update the ecowitt Meteotemplate plugin to the latest version (or the index.php if you have your own webserver)</b>
 ![Example of airquality block page](https://raw.githubusercontent.com/iz0qwm/ecowitt_http_gateway/master/ecowitt_block_airquality1.png)
 ![Example of airquality block page](https://raw.githubusercontent.com/iz0qwm/ecowitt_http_gateway/master/ecowitt_block_airquality2.png)
 
@@ -151,7 +152,7 @@ If you don't want to use the ecowitt_http_gateway, you can use the [Interceptor 
 ![Example of modules block page](https://raw.githubusercontent.com/iz0qwm/ecowitt_http_gateway/master/ecowitt_block_modules2.png)
 ![Example of modules block page](https://raw.githubusercontent.com/iz0qwm/ecowitt_http_gateway/master/ecowitt_block_modules3.png)
 
-<b> Remember to update the ecowitt Meteotemplate plugin to the last version (or the index.php if you have your own webserver)</b>
+
 #
 #
 # NOTE from the issue forum
