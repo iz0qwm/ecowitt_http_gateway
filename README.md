@@ -1,5 +1,7 @@
 # ecowitt_http_gateway
-<i>Simple HTTP gateway that receives data from <b>GW1000 with Ecowitt protocol</b> and resend data to Meteotemplate or csv, json, ecc.</i><br><br>
+<i>Simple HTTP gateway that receives data from <b>GW1000 with Ecowitt protocol</b> and resend data to Meteotemplate or csv, json, ecc.</i><br>
+Example on: http://www.kwos.org/poggiocorese_ecowitt
+<br><br>
 <b><i>Install this gateway if you have a web server at home, like a Raspberry or something where you want to store weather data</b></i>
   
 The GW1000 allows sending data both to Ecowitt.net and Wunderground, even to an external site as long as you select one
