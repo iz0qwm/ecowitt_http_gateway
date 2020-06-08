@@ -328,8 +328,12 @@ if ( $ws80_temperature_correction == 1 ) {
 	if ( $diff_corr_temp < -0.7 ) {
 		$temp_corr = $temp_corr-0.5;	
 	}
-	@$weather_data['tempc'] = round($temp_corr, 2);
 	
+        # tempc is now corrected
+        @$weather_data['tempc'] = round($temp_corr, 2);
+        # tempf is now corrected
+        @$weather_data['tempf'] = round( ( $temp_corr * 9/5 ) + 32, 2 );
+
 	
 	#
 	# Writing to files last values
