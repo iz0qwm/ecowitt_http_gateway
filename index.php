@@ -588,7 +588,7 @@ if ( $txt_weewx == 1 )
 {
     @$weather_data_weewx['outTemp'] = $weather_data['tempf'] ;
     @$weather_data_weewx['barometer'] = $weather_data['baromrelin'] ;
-    @$weather_data_weewx['pressure'] = $weather_data['baromrelin'] ;
+    @$weather_data_weewx['pressure'] = $weather_data['baromabsin'] ;
     @$weather_data_weewx['outHumidity'] = $weather_data['humidity'] ;
     @$weather_data_weewx['windSpeed'] = $weather_data['windspeedmph'] ;
     @$weather_data_weewx['windDir'] = $weather_data['winddir'] ;
