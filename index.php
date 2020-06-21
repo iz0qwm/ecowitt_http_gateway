@@ -72,9 +72,9 @@ $device = "auto";  	# Use 'auto' for automatic name from PASSKEY else uses the n
 $json_data_log = 1; 	# Activate the export to JSON. Set always to 1 
 $txt_data_log = 0; 	# Activate the export to .csv
 $fhem_data_log = 0; 	# Activate the forward to FHEM server
-$forward_data = 1; 	# Activate the forward to Meteotemplate web site
+$forward_data = 0; 	# Activate the forward to Meteotemplate web site
 $txt_mnw = 0; 		# Activate the FTP for the Meteonetwork string
-$txt_weewx = 1;         # Activate the export to .txt for weewx driver
+$txt_weewx = 0;         # Activate the export to .txt for weewx driver
 $ws80_temperature_correction = 0; # Activate the temperature correction method based on Energy balance only for WS80
 
 # Settings: FHEM
@@ -87,7 +87,7 @@ $txt_data_logdir = "/var/log/ecowitt";
 
 # Settings: Forward to meteotemplate server
 $forward_server = "www.kwos.org/poggiocorese_ecowitt/api.php";
-$forward_server_password = "richany12";
+$forward_server_password = "******";
 
 # Setting for Meteonetwork export file
 $station_mnw = "mcr063";  		# This is the name of the station received by Meteonetwork registration
