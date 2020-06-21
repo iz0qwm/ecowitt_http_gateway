@@ -138,7 +138,7 @@ $f_in_mm = 25.4;
     # Speeds
     @$weather_data['windgustkmh'] = round( $weather_data['windgustmph'] * $f_mph_kmh, 2 );
     @$weather_data['windspeedkmh'] = round( $weather_data['windspeedmph'] * $f_mph_kmh, 2 );
-	@$weather_data['windspeedms'] = round( $weather_data['windspeedmph'] * $f_mph_ms, 2 ); 	
+    @$weather_data['windspeedms'] = round( $weather_data['windspeedmph'] * $f_mph_ms, 2 ); 	
     
     # Calculated
     @$weather_data['windchillc'] = round((13.12 + 0.6215 * @$weather_data['tempc'] - 11.37 * pow(@$weather_data['windspeedkmh'],0.16) + 0.3965 * @$weather_data['tempc'] * pow(@$weather_data['windspeedkmh'],0.16)), 1);
@@ -340,10 +340,10 @@ if ( $ws80_temperature_correction == 1 ) {
 	#
 
 	$write_S_1 = $txt_dir_weewx . "/last-1_solar_ws80.txt";
-    $file = fopen($write_S_1, 'w');
+        $file = fopen($write_S_1, 'w');
 	$stringa = round($weather_data['solarradiation'], 2) . "\n";
-    fwrite($file, $stringa);
-    fclose($file);
+    	fwrite($file, $stringa);
+    	fclose($file);
 	
 	# read old solar rad from file
 	$read_S_1 = $txt_dir_weewx . "/last-1_solar_ws80.txt";
@@ -352,28 +352,28 @@ if ( $ws80_temperature_correction == 1 ) {
 		$get_read_S_1 = fgets($file);
 		$get_read_S_1 = round((double)$get_read_S_1, 2);
 	#}
-    fclose($file);
+    	fclose($file);
 	
 	# write old solar to new file
 	$write_S_2 = $txt_dir_weewx . "/last-2_solar_ws80.txt";
-    $file = fopen($write_S_2, 'w');
+    	$file = fopen($write_S_2, 'w');
 	$stringa =  round((double)$get_read_S_1, 2) . "\n";
-    fwrite($file, $stringa);
-    fclose($file);
+    	fwrite($file, $stringa);
+    	fclose($file);
 	
 	# write temp not corrected to file
 	$write_T_1 = $txt_dir_weewx . "/last-1_temperature.txt";
-    $file = fopen($write_T_1, 'w');
+    	$file = fopen($write_T_1, 'w');
 	$stringa = round($weather_data['tempc_orig'], 2) . "\n";
-    fwrite($file, $stringa);
-    fclose($file);
+    	fwrite($file, $stringa);
+    	fclose($file);
 
         # write temp corrected to file
         $write_corr_T_1 = $txt_dir_weewx . "/last-1_corr_temperature.txt";
-    $file = fopen($write_corr_T_1, 'w');
+    	$file = fopen($write_corr_T_1, 'w');
         $stringa = round($weather_data['tempc'], 2) . "\n";
-    fwrite($file, $stringa);
-    fclose($file);
+    	fwrite($file, $stringa);
+    	fclose($file);
 
 	
 }	
@@ -381,32 +381,32 @@ if ( $ws80_temperature_correction == 1 ) {
 # Forward data to meteotemplate server
 if ( $forward_data == 1 ) 
 {
-    @$weather_data_forward['U'] = strtotime( $weather_data['dateutc'] );
-    @$weather_data_forward['PASS'] = $forward_server_password ;
-    @$weather_data_forward['T'] = $weather_data['tempc'] ;
-    @$weather_data_forward['H'] = $weather_data['humidity'] ;
-    @$weather_data_forward['P'] = $weather_data['baromrelhpa'] ;
-    @$weather_data_forward['W'] = $weather_data['windspeedkmh'] ;
-    @$weather_data_forward['G'] = $weather_data['windgustkmh'] ;
-    @$weather_data_forward['B'] = $weather_data['winddir'] ;
-    @$weather_data_forward['R'] = $weather_data['dailyrainmm'] ;
-    @$weather_data_forward['RR'] = $weather_data['rainratemm'] ;
-    @$weather_data_forward['S'] = $weather_data['solarradiation'] ;
-    @$weather_data_forward['UV'] = $weather_data['uv'] ;
-    @$weather_data_forward['TIN'] = $weather_data['tempinc'] ;
-    @$weather_data_forward['HIN'] = $weather_data['humidityin'] ;
-    @$weather_data_forward['T1'] = $weather_data['temp1c'] ;
-    @$weather_data_forward['H1'] = $weather_data['humidity1'] ;
-    @$weather_data_forward['T2'] = $weather_data['temp2c'] ;
-    @$weather_data_forward['H2'] = $weather_data['humidity2'] ;
-    @$weather_data_forward['T3'] = $weather_data['temp2c'] ;
-    @$weather_data_forward['H3'] = $weather_data['humidity2'] ;
-    @$weather_data_forward['SM1'] = $weather_data['soilmoisture1'] ;
-    @$weather_data_forward['SM2'] = $weather_data['soilmoisture2'] ;	
-    @$weather_data_forward['PP1'] = $weather_data['pm25_ch1'] ;
-    @$weather_data_forward['L'] = $weather_data['lightning_num'] ;
-    @$weather_data_forward['LD'] = $weather_data['lightning'] ;
-    @$weather_data_forward['LT'] = $weather_data['lightning_time'] ;
+	@$weather_data_forward['U'] = strtotime( $weather_data['dateutc'] );
+    	@$weather_data_forward['PASS'] = $forward_server_password ;
+    	@$weather_data_forward['T'] = $weather_data['tempc'] ;
+    	@$weather_data_forward['H'] = $weather_data['humidity'] ;
+    	@$weather_data_forward['P'] = $weather_data['baromrelhpa'] ;
+    	@$weather_data_forward['W'] = $weather_data['windspeedkmh'] ;
+    	@$weather_data_forward['G'] = $weather_data['windgustkmh'] ;
+    	@$weather_data_forward['B'] = $weather_data['winddir'] ;
+    	@$weather_data_forward['R'] = $weather_data['dailyrainmm'] ;
+    	@$weather_data_forward['RR'] = $weather_data['rainratemm'] ;
+    	@$weather_data_forward['S'] = $weather_data['solarradiation'] ;
+    	@$weather_data_forward['UV'] = $weather_data['uv'] ;
+    	@$weather_data_forward['TIN'] = $weather_data['tempinc'] ;
+    	@$weather_data_forward['HIN'] = $weather_data['humidityin'] ;
+    	@$weather_data_forward['T1'] = $weather_data['temp1c'] ;
+    	@$weather_data_forward['H1'] = $weather_data['humidity1'] ;
+    	@$weather_data_forward['T2'] = $weather_data['temp2c'] ;
+    	@$weather_data_forward['H2'] = $weather_data['humidity2'] ;
+    	@$weather_data_forward['T3'] = $weather_data['temp2c'] ;
+    	@$weather_data_forward['H3'] = $weather_data['humidity2'] ;
+    	@$weather_data_forward['SM1'] = $weather_data['soilmoisture1'] ;
+    	@$weather_data_forward['SM2'] = $weather_data['soilmoisture2'] ;	
+    	@$weather_data_forward['PP1'] = $weather_data['pm25_ch1'] ;
+    	@$weather_data_forward['L'] = $weather_data['lightning_num'] ;
+    	@$weather_data_forward['LD'] = $weather_data['lightning'] ;
+    	@$weather_data_forward['LT'] = $weather_data['lightning_time'] ;
 	@$weather_data_forward['WBAT'] = $weather_data['wh80batt'] ;
 	@$weather_data_forward['RBAT'] = $weather_data['wh40batt'] ;
 	@$weather_data_forward['LBAT'] = $weather_data['wh57batt'] ;
