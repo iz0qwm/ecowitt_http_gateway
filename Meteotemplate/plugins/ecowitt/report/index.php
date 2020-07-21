@@ -33,6 +33,8 @@
 	#	    - modification to the formula of temperature correction method based on Energy balance 
 	#	v2.0 - May 11, 2020
 	#	    - Battery status for sensors
+	#	v2.1 - May 11, 2020
+	#	    - Added WH65 Battery 
 	############################################################################
 	
 
@@ -247,7 +249,19 @@
 		@$weather_data_forward['L'] = $weather_data['lightning_num'] ;
 		@$weather_data_forward['LD'] = $weather_data['lightning'] ;
 		@$weather_data_forward['LT'] = $weather_data['lightning_time'] ;
-		@$weather_data_forward['WBAT'] = $weather_data['wh80batt'] ;
+		if (isset($weather_data['wh80batt']))
+		{ 
+			@$weather_data_forward['WBAT'] = $weather_data['wh80batt'] ;
+		} else {
+			if ( $weather_data['wh65batt'] == 0 )
+			{
+				@$weather_data_forward['WBAT'] = 3 ;
+			}		
+			if ( $weather_data['wh65batt'] == 1 )
+			{
+				@$weather_data_forward['WBAT'] = 1.4 ;
+			}
+		} 
 		@$weather_data_forward['RBAT'] = $weather_data['wh40batt'] ;
 		@$weather_data_forward['LBAT'] = $weather_data['wh57batt'] ;
 		@$weather_data_forward['SM1BAT'] = $weather_data['soilbatt1'] ;
