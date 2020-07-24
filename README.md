@@ -47,7 +47,7 @@ jq -r '.tempc' weather_XXXXXXXXXXXXXXXX.json</i>
 #
 # ecowitt WeeWX driver
 
-** The code has been written in Python 2.7.x. If you use Python 3, you have to convert it with 2to3 utility: https://docs.python.org/2/library/2to3.html **
+<b> The code has been written in Python 2.7.x. If you use Python 3, you have to convert it with 2to3 utility: https://docs.python.org/2/library/2to3.html </b>
 <br><br>
 Called <b>ecowitt.py</b> <br>
 This driver works in two modes:
