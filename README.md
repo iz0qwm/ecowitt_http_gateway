@@ -49,6 +49,8 @@ jq -r '.tempc' weather_XXXXXXXXXXXXXXXX.json</i>
 
 <b> The code has been written in Python 2.7.x. If you use Python 3, you have to convert it with 2to3 utility: https://docs.python.org/2/library/2to3.html </b>
 <br><br>
+<b> This driver uses the Customized Upload method of GW1000. It can be every where in the network. It doesn't use any sniffing, interception method.</b>
+<br><br>
 Called <b>ecowitt.py</b> <br>
 This driver works in two modes:
 
@@ -127,9 +129,7 @@ In the weewx.conf or skinf.conf use the following Labels
                 supplyVoltage        = WH40-Rain
 </pre>
 <b>NOTE</b><br>
-If you don't want to use the ecowitt_http_gateway, you can use the [Interceptor driver](https://github.com/matthewwall/weewx-interceptor) to sniff data of your GW1000.
-
-#
+If you don't want to use the ecowitt_http_gateway, you can use the [Interceptor driver](https://github.com/matthewwall/weewx-interceptor) to sniff data of your GW1000, or you can use the [API broadcast methos driver](https://github.com/gjr80/weewx-gw1000) that uses the same protocol used by VSView, WeeWx must stay on the same network of the GW1000.
 #
 # ecowitt Meteotemplate plugin
 <i>Simple plugin for [Meteotemplate](http://www.meteotemplate.com/), wonderful template developed by Jachym.</i><br><br>
